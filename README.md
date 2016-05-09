@@ -21,5 +21,7 @@
 
 API：
 ccm.push();添加弹幕
+
 ccm.start();开始
+
 ccm.pause();暂停
