@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+
+    <title>弹幕插件</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            text-decoration: none;
+            list-style: none;
+
+            /**/
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-text-size-adjust: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        input, button, select, textarea {
+            outline: 0 none;
+            border: 0px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        #cullet {
+            background-color: rgba(0, 0, 0, 0.25);
+            position: fixed;
+            width: 200%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            /*z-index: 1;*/
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div id="cullet"></div>
+<div><img src="img/bg.jpg" alt=""/></div>
+
+
+<script src='js/jquery-1.8.3.min.js'></script>
+<script src='js/underscore.js'></script>
+<script src='js/cullet-1.0.0.min.js'></script>
+<script>
+    $(function () {
+
+        var ccm = new CommentCellManage('#cullet', null); //ccm.push已经和cc灵魂绑定了 所以不用再实例化 cc
+        window.ccm = ccm; //控制台测试
+        var inputBox = new InputBox('#cullet', null);
+        //循环加载弹幕
+        setInterval(function () {
+            ccm.push();
+        }, 1000)
+
+        ccm.start();
+
+
+    })
+</script>
+</body>
+</html>
