@@ -6,22 +6,14 @@
 	<script>
 		$(function () {
 
-			var ccm = new CommentCellManage('#cullet', null); //ccm.push已经和cc灵魂绑定了 所以不用再实例化 cc
-			var inputBox = new InputBox('#cullet', null);
-			//循环加载弹幕
-			setInterval(function () {
-				ccm.push();
-			}, 1000)
+			    var ccm = new CommentCellManage('#cullet', {serverUrl: 'http://n1.jimi.la/apps_T1/culletSelect.php'});
 
-			ccm.start();
+				var inputBox = new InputBox('#cullet', null, ccm);
+
+				ccm.load();
 
 
 		})
 	</script>
 
-API：
-ccm.push();添加弹幕
-
-ccm.start();开始
-
-ccm.pause();暂停
+API：天天变懒得写 请留言
