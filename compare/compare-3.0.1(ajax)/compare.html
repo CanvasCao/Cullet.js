@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <title></title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            word-break: break-all;
+            text-align: center;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-text-size-adjust: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+        }
+
+        body, html {
+            height: 100%;
+        }
+
+        table {
+        }
+
+        td {
+            /*height: 200px;*/
+            /*width: 200px;*/
+            background-color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            height: 50px;
+            border: 1px solid #d2d2d2;
+            /*cursor: none;*/
+
+        }
+
+        #realdiv {
+            /*height: 100%;*/
+            /*width: 100%;*/
+            overflow: auto;
+            box-sizing: border-box;
+            /*border: 3px solid red;*/
+        }
+
+        #real td {
+            /*border: 1px solid red;*/
+        }
+
+        #fakeLdiv {
+            height: 667px;
+            box-sizing: border-box;
+
+            /*border: 1px solid blue;*/
+            overflow: hidden;
+            z-index: 999;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+
+        #fakeL td {
+            /*border: 1px solid blue;*/
+            box-shadow: inset -10px 0px 10px rgba(0, 0, 0, 0.1);
+
+        }
+
+        #fakeTdiv {
+            box-sizing: border-box;
+            width: 375px;
+            overflow: hidden;
+            /*border: 1px solid green;*/
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            /*display: none;*/
+            /*background-color: green;*/
+            z-index: 999;
+
+        }
+
+        #fakeT td {
+            /*border: 1px solid green;*/
+        }
+
+        #fixLT {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            /*display: none;*/
+            z-index: 1000;
+        }
+
+        #fixLT td {
+            box-shadow: inset -10px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+<div id='con'>
+
+</div>
+<script src="js/jquery-1.8.3.min.js"></script>
+<script>
+    $(function () {
+        if (!window.location.search) {
+            window.location = window.location + '?rid=109';
+        }
+
+        //initParas
+        var srcH = ($(window).height())
+        var srcW = ($(window).width())
+        var leftW = srcW * 0.2;
+        var mainW = srcW * 0.4;
+        var topH = 200; //首行是一个比较大的数字
+//        alert(srcW + "  " + srcH)
+
+
+        //createDom
+        $('#con').append('<div id="realdiv"></div>');
+        $('#con').append('<div id="fakeLdiv"></div>');
+        $('#con').append('<div id="fakeTdiv"></div>');
+        $('#con').append('<table id="fixLT" border="0" cellspacing="0" cellpadding="0"></table>');
+        $('#realdiv').html('<table id="real" border="0" cellspacing="0" cellpadding="0"></table>');
+        $('#fakeLdiv').html('<table id="fakeL" border="0" cellspacing="0" cellpadding="0"></table>');
+        $('#fakeTdiv').html('<table id="fakeT" border="0" cellspacing="0" cellpadding="0"></table>');
+
+        //alert(srcH+"  "+srcW);
+
+        $.ajax({
+            type: "get",
+            //url: 'http://n1.jimi.la/apps_V3/informationPost.php' + window.location.search,
+            url: 'r.json',
+            dataType: "jsonp",
+            jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+            jsonpCallback: "jsonpcallback",
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                var topArr = data.productData;
+                var leftArr = data.detailData;
+                var mainArr = data.table;
+                var rowNum = mainArr.length;
+                var colNum = mainArr[0].length;
+                var totalRowLen;
+                var totalColLen = leftW + ((colNum - 1) * mainW);//总宽
+
+                //mainData
+                for (i = 0; i < mainArr.length; i++) {
+                    var row = mainArr[i];
+                    $('#real').append('<tr></tr>')
+                    //第一行还要绑定图片的哟~~
+                    if (i == 0) { //第一行还要绑定图片的哟~~
+                        for (j = 0; j < row.length; j++) {
+                            $('#real').find('tr').eq(i).append('<td>' + 'hahhhhhhhhhhhahaha' + '<br>' + mainArr[i][j] + '</td>');
+                        }
+
+                    } else {    //第二行开始正常绑定
+                        for (j = 0; j < row.length; j++) {
+                            $('#real').find('tr').eq(i).append('<td>' + mainArr[i][j] + '</td>');
+                        }
+                    }
+                }
+                $('#realdiv').css({height: srcH, width: srcW});//√
+                $('#real').css({width: totalColLen});//real必须设宽 不然table不管多宽自动宽度100%
+                //real的第一行应该特别高
+//                $('#real tr').eq(0).find('td').css('height', 59);
+
+
+                //fakeL 绑定第一列数据
+                for (i = 0; i < mainArr.length; i++) {
+                    $('#fakeL').append('<tr></tr>');
+                    $('#fakeL').find('tr').eq(i).append('<td data="unclicked">' + mainArr[i][0] + '</td>');
+                }
+                $('#fakeLdiv').css({height: srcH, width: leftW});//fakeLdiv是个容器 宽度20% 高度必须是屏幕高
+                //这里fakeL 不用设置高 不知道为什么
+
+                //fakeTop 绑定第一行数据
+                var firstRow = mainArr[0];
+                $('#fakeT').append('<tr></tr>');
+                for (j = 0; j < firstRow.length; j++) {
+                    $('#fakeT').find('tr').append('<td>' + firstRow[j] + '</td>');
+                }
+                $('#fakeTdiv').css({width: srcW});//fakeTdiv是个容器
+                $('#fakeT').css({width: totalColLen});
+
+
+                //fixLT
+                $('#fixLT').html(' <tr><td>' + mainArr[0][0] + '</td></tr>')
+
+
+                //td设宽度
+                $('td').each(function (i, e) {
+                    if ($(e).index() == 0) { //如果是左一列就是总宽的20%
+                        $(e).css({width: leftW});
+                    }
+                    else {
+                        $(e).css({width: mainW}); //否则就是总宽的40%
+                    }
+                })
+
+                //同步左右表高度 fakeL里面每一个td的高度要根据mainData的每个td的高度来决定
+                $('#fakeLdiv td').each(function (i, e) {
+                    var height = $('#real tr').eq(i).css('height');
+                    $(e).css({height: height});
+                })
+
+
+                //测试用
+//                $('#realdiv').scroll(function () {
+//
+//                })
+                var scrollTopValue;//scrollTopValue就是往上Scroll多少就开始hide和show了
+                scrollTopValue = $('#real tr').height() - $('#fakeT tr').height();
+
+                //滚动跟随效果
+                $('#realdiv').scroll(function () {
+                    var curScrollTop = $(this).scrollTop();
+                    var curScrollLeft = $(this).scrollLeft();
+//                    console.log(scrollTop);
+//                    console.log(scrollLeft);
+
+                    $('#fakeLdiv').scrollTop(curScrollTop);
+                    $('#fakeTdiv').scrollLeft(curScrollLeft);
+
+                    if (curScrollTop >= scrollTopValue) {
+                        $('#fakeTdiv').css({opacity: 1});
+                        $('#fixLT').css({opacity: 1});
+                    }
+                    else {
+                        $('#fakeTdiv').css({opacity: 0});
+                        $('#fixLT').css({opacity: 0});
+                    }
+                })
+
+
+                //点击变换shadow
+//                box-shadow: inset -10px 0px 10px rgba(0,0,0,0.1);
+
+//                box-shadow: inset 0px 0px 8px rgba(50,50,255,0.3);
+//                background-color: #cdf8ff;
+                $fakeLdivTd=$('#fakeLdiv td');
+                $realdiv=$('#realdiv');
+
+                $fakeLdivTd.click(function () {
+                    var index=$(this).parent().index()
+                    if(index==0){
+                        return;
+                    }
+                    ChangeShadow(index);
+                })
+
+                $realdiv.find('td').click(function () {
+                    var index=$(this).parent().index()
+                    if(index==0){
+                        return;
+                    }
+                    ChangeShadow(index);
+                })
+
+
+                function ChangeShadow(index){
+                    if($fakeLdivTd.eq(index).attr('data')=='unclicked'){
+                        $fakeLdivTd.eq(index).css({
+                            'box-shadow': 'inset 0px 0px 8px rgba(50,50,255,0.3)',
+                            'background-color': '#cdf8ff'
+                        });
+                        $realdiv.find('tr').eq(index).find('td').css({
+                            'background-color': '#cdf8ff'
+                        });
+
+                        $fakeLdivTd.eq(index).attr('data','clicked');
+                    }
+                    else{
+                        $fakeLdivTd.eq(index).css({
+                            'box-shadow': 'inset -10px 0px 10px rgba(0, 0, 0, 0.1)',
+                            'backgroundColor': 'white'
+                        });
+                        $fakeLdivTd.eq(index).attr('data','unclicked');
+                        $realdiv.find('tr').eq(index).find('td').css({
+                            'background-color': 'white'
+                        })
+                    }
+                }
+            },
+            error: function (err) {
+                console.log('ERROR!')
+                console.log(err);
+            }
+        });
+    })
+</script>
+</body>
+</html>

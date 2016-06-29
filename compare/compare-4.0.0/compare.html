@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <title>参数对比</title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            word-break: break-all;
+            text-align: center;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-text-size-adjust: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            font-size: 12px;
+
+        }
+
+        body, html {
+            height: 100%;
+        }
+
+        table {
+        }
+
+        td {
+            /*height: 200px;*/
+            /*width: 200px;*/
+            background-color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            height: 50px;
+            border-left: 1px solid #d2d2d2;
+            border-top: 1px solid #d2d2d2;
+            /*cursor: none;*/
+
+            /*啊哟我操 只是因为方辉要在里面加a标签*/
+            position: relative;
+        }
+
+        #realdiv {
+            /*height: 100%;*/
+            /*width: 100%;*/
+            overflow: auto;
+            /*box-sizing: border-box;*/
+            /*padding-top: 200px;*/
+            /*border: 3px solid red;*/
+        }
+
+        #real td {
+            /*border: 1px solid red;*/
+        }
+
+        #fakeLdiv {
+            box-sizing: border-box;
+
+            /*border: 1px solid blue;*/
+            overflow: hidden;
+            z-index: 999;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+
+        #fakeL td {
+            /*border: 1px solid blue;*/
+            box-shadow: inset -10px 0px 10px rgba(0, 0, 0, 0.1);
+
+        }
+
+        #fakeTdiv {
+            box-sizing: border-box;
+            overflow: hidden;
+            /*border: 1px solid green;*/
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            /*display: none;*/
+            /*background-color: green;*/
+            z-index: 999;
+
+        }
+
+        #fakeT td {
+            /*border: 1px solid green;*/
+        }
+
+        #fixLT {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            /*display: none;*/
+            z-index: 1000;
+            vertical-align: center;
+        }
+
+        #fixLT td {
+            box-shadow: inset -10px 0px 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        #real img {
+            /*background-color: red;*/
+            height: 50px;
+            width: 50px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #rocket {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            display: none;
+        }
+
+        .hideSame {
+            border: 1px solid #3982e1;
+            color: #3982e1;
+            border-radius: 5px;
+            line-height: 28px;
+        }
+
+        #con {
+            position: relative;
+        }
+
+        /*基本参数那一行*/
+        #line2 {
+            position: absolute;
+            box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.4);
+            display: block;
+            width: 100%;
+            z-index: 1005;
+            background-color: #efefef;
+            /*box-sizing: border-box;*/
+            /*border: 10px solid red;*/
+            /*高度是第二行的高度*/
+            /*top是第一行的高度*/
+        }
+    </style>
+</head>
+<body>
+<div id='con'>
+    <div id='line2'>
+        <div id='line2col1'>基本参数</div>
+        <div id='line2col2'>√ 有&nbsp ×无&nbsp - 无数据</div>
+    </div>
+</div>
+
+<div id='rocket'>
+    <img src="img/backTop.png" width="40" height="40" alt=""/>
+</div>
+<script src="js/jquery-1.8.3.min.js"></script>
+<script src="js/underscore.js"></script>
+<script>
+    $(function () {
+        if (!window.location.search) {
+            window.location = window.location + '?pids=56f4d16cefb80c57428b6400,56f4d3e3efb80c57428b67cd,56f4d0d0efb80c57428b630a&cate=3';
+//            window.location = window.location + '?pids=56f57a7defb80c57428c74f6,56f56b2befb80c57428c654f&cate=6';
+        }
+
+//        ?pids=56f57a7defb80c57428c74f6,56f56b2befb80c57428c654f&cate=6
+//        ?pids=56f4d16cefb80c57428b6400,56f4d3e3efb80c57428b67cd,56f4d0d0efb80c57428b630a&cate=3
+//变窄bug ?pids=56f57b91efb80c57428c767f,56f57b9cefb80c57428c7688&cate=54
+
+        //init ScreenRelatedParas...............................................................................
+        var srcH = $(window).height();
+        var srcW = $(window).width();
+
+        var leftW = srcW * 0.24;
+        var mainW = srcW * 0.38; //(100-24)/2
+
+        //createDom............................................................................................
+        $('#con').append('<div id="realdiv"></div>');
+        $('#con').append('<div id="fakeLdiv"></div>');
+        $('#con').append('<div id="fakeTdiv"></div>');
+        $('#con').append('<table id="fixLT" border="0" cellspacing="0" cellpadding="0"></table>');
+        $('#realdiv').html('<table id="real" border="0" cellspacing="0" cellpadding="0"></table>');
+        $('#fakeLdiv').html('<table id="fakeL" border="0" cellspacing="0" cellpadding="0"></table>');
+        $('#fakeTdiv').html('<table id="fakeT" border="0" cellspacing="0" cellpadding="0"></table>');
+        $('#fixLT').html(' <tr><td>' + '<div class="hideSame">隐藏相同</div>' + '</td></tr>')
+
+
+        $.ajax({
+            type: "get",
+            url: 'http://n1.jimi.la/apps_T1/compare.php' + window.location.search,
+//            url: 'r.json',
+            dataType: "jsonp",
+            jsonp: "callback",
+            jsonpCallback: "jsonpcallback",
+            success: function (data) {
+                console.log(JSON.stringify(data));
+                var headerArr = data.header;
+                var mainArr = data.table;
+                var rowNum = mainArr.length;
+                var colNum = mainArr[0].length;
+                var totalRowLen;//不需要计算高度  宽度才要撑出来
+                var totalColLen = leftW + ((colNum - 1) * mainW);//总宽 一个20%+n个40%
+
+
+                //bindEvent........................................................................
+                //mainData..........................................................................
+                //第一行是header参数
+                $('#real').append('<tr></tr>');
+                $('#real').find('tr').eq(0).append('<td></td>') //第一行第一格是空
+                for (i = 0; i < headerArr.length; i++) {
+                    var url = headerArr[i]['pic'] || 'img/logo.jpg';
+                    $('#real').find('tr').eq(0).append('<td>' + '<img src=' + url + ' />' + headerArr[i]['title'] + '</td>');
+                }
+
+                //第二行是基本参数
+                $('#real').append('<tr></tr>')
+                for (i = 0; i < headerArr.length; i++) {
+                    $('#real').find('tr').eq(1).append('<td>' + 'line2' + '</td>');
+                }
+
+                //第三行开始正常绑定
+                for (i = 0; i < mainArr.length; i++) {
+                    var row = mainArr[i];
+                    $('#real').append('<tr></tr>');
+
+                    for (j = 0; j < row.length; j++) {
+                        var cellData = mainArr[i][j] || '-'
+                        $('#real').find('tr').eq(i + 2).append('<td>' + cellData + '</td>'); //find('tr').eq(i + 2) 一定要+2
+                    }
+                }
+                $('#realdiv').css({height: srcH, width: srcW});//容器
+                $('#real').css({width: totalColLen});//real必须设宽 不然table不管多宽自动宽度100%
+
+
+                //mainData需要一个数组判断重复项........................................................................
+                var repeatLineArr = [];
+                for (i = 2; i < $('#real tr').length; i++) {//从第三行开始遍历 因为前两行不是数据
+                    var $tds = $('#real tr').eq(i).find('td:gt(0)');//不要第一列
+                    var allDataArr = [];
+                    $tds.each(function (index, ele) {
+                        allDataArr.push($tds.eq(index).html());
+                    })
+//                    console.log(allDataArr);
+                    if (_.unique(allDataArr).length == 1) {
+                        repeatLineArr.push(i)
+                    }
+
+                }
+//                console.log(repeatLineArr);
+
+
+                //fakeL 绑定第一列数据..........................................................................
+//                fakeL第一行是header 的第一个数据
+                $('#fakeL').append('<tr></tr>');
+                $('#fakeL').find('tr').eq(0).append('<td data="unclicked">' + '<div class="hideSame">隐藏相同</div>' + '</td>');
+
+//                fakeL第二行是'line2'以后会盖掉
+                $('#fakeL').append('<tr></tr>');
+                $('#fakeL').find('tr').eq(1).append('<td data="unclicked">' + 'line2' + '</td>');
+
+                for (i = 0; i < mainArr.length; i++) {
+                    $('#fakeL').append('<tr></tr>');
+                    $('#fakeL').find('tr').eq(i + 2).append('<td data="unclicked">' + mainArr[i][0] + '</td>');
+                }
+                $('#fakeLdiv').css({height: srcH, width: leftW});//fakeLdiv是个容器 宽度20% 高度必须是屏幕高
+
+
+                //fakeTop 绑定数据............................................................................
+                $('#fakeT').append('<tr></tr>');
+                //第一行第一格是空
+                $('#fakeT').find('tr').eq(0).append('<td>' + '</td>')
+                //第一行第二格开始绑定数据
+                for (i = 0; i < headerArr.length; i++) {
+                    $('#fakeT').find('tr').append('<td>' + headerArr[i]['title'] + '</td>');
+                }
+                $('#fakeTdiv').css({width: srcW});//fakeTdiv是个容器
+                $('#fakeT').css({width: totalColLen});
+
+
+                //td设宽度.....................................................................................
+                $('td').each(function (i, e) {
+                    if ($(e).index() == 0) { //如果是左一列就是总宽的20%
+                        $(e).css({width: leftW});
+                    }
+                    else {
+                        $(e).css({width: mainW}); //否则就是总宽的40%
+                    }
+                })
+
+                //同步左右表高度 fakeL里面每一个td的高度要根据mainData的每个td的高度来决定.............................
+                $('#fakeLdiv td').each(function (i, e) {
+                    var height = $('#real tr').eq(i).css('height');
+                    $(e).css({height: height});
+                })
+
+                //同步line2 高度和top值
+                var line2Height = $('#real tr').eq(1).css('height');
+                $('#line2').css({height: line2Height})
+
+                var line2Top = $('#real tr').eq(0).css('height');
+                $('#line2').css({top: line2Top})
+
+                $('#line2>div').css({'height': '100%', 'line-height': line2Height, 'display': 'inline-block'})
+                $('#line2col1').css({'width': (leftW), 'float': 'left'})
+                $('#line2col2').css({
+                    'width': (mainW * 2),
+                    'float': 'right',
+                    'box-sizing': 'border-box',
+                    'padding-right': 20,
+                    'text-align': 'right'
+                })
+
+                // 同步完左右表高度 同步fixLT高度..................................................................
+                var realLine1Height = $('#real tr').eq(0).height();
+                var fakeTLine1Height = $('#fakeT tr').eq(0).height();
+                $('#fixLT').css({height: fakeTLine1Height});
+
+
+                //滚动跟随效果....................................................................................
+                var scrollTopValue;//scrollTopValue就是往上Scroll多少就开始hide和show了
+                scrollTopValue = realLine1Height - fakeTLine1Height;
+                //滚动跟随效果
+                $('#realdiv').scroll(function () {
+                    var curScrollTop = $(this).scrollTop();
+                    var curScrollLeft = $(this).scrollLeft();
+
+
+                    $('#fakeLdiv').scrollTop(curScrollTop);
+                    $('#fakeTdiv').scrollLeft(curScrollLeft);
+
+                    if (curScrollTop >= scrollTopValue) {
+                        $('#fakeTdiv').css({opacity: 1});
+                        $('#fixLT').css({opacity: 1});
+                        $('#line2').css('top', fakeTLine1Height);
+                        $('#rocket').show();
+                    }
+                    else {
+                        $('#fakeTdiv').css({opacity: 0});
+                        $('#fixLT').css({opacity: 0});
+
+                        $('#line2').css('top', realLine1Height - curScrollTop);
+                        $('#rocket').hide();
+                    }
+                })
+
+
+                //点击变换shadow....................................................................
+                $fakeLdivTd = $('#fakeLdiv td');
+                $realdiv = $('#realdiv');
+
+                $fakeLdivTd.click(function () {
+                    var index = $(this).parent().index()
+                    if (index == 0 || index == 1) {
+                        return;
+                    }
+                    ChangeShadow(index);
+                })
+
+                $realdiv.find('td').click(function () {
+                    var index = $(this).parent().index()
+                    if (index == 0) {
+                        return;
+                    }
+                    ChangeShadow(index);
+                })
+
+
+                function ChangeShadow(index) {
+                    if ($fakeLdivTd.eq(index).attr('data') == 'unclicked') {
+                        $fakeLdivTd.eq(index).css({
+                            'box-shadow': 'inset 0px 5px 10px rgba(113,187,230,0.3)',
+                            'background-color': '#e7f4ff',
+                            'color': '#3982e1'
+                        });
+                        $realdiv.find('tr').eq(index).find('td').css({
+                            'background-color': '#e7f4ff'
+                        });
+
+                        $fakeLdivTd.eq(index).attr('data', 'clicked');
+                    }
+                    else {
+                        $fakeLdivTd.eq(index).css({
+                            'box-shadow': 'inset -10px 0px 10px rgba(0, 0, 0, 0.1)',
+                            'backgroundColor': 'white',
+                            'color': 'black'
+                        });
+                        $fakeLdivTd.eq(index).attr('data', 'unclicked');
+                        $realdiv.find('tr').eq(index).find('td').css({
+                            'background-color': 'white'
+                        })
+                    }
+                }
+
+                //.....................................................................
+
+
+                //火箭点击上升...........................................................
+                $('#rocket').click(function () {
+                    $('#realdiv').animate({'scrollTop': 0}, 'normal');
+
+                })
+
+
+                var ifHide = false;
+                //隐藏相同...............................................................
+                $('.hideSame').parent().click(function () {
+
+                    if (!ifHide) {
+                        for (i = 0; i < repeatLineArr.length; i++) {
+                            $realdiv.find('tr').eq(repeatLineArr[i]).hide();
+                            $('#fakeL').find('tr').eq(repeatLineArr[i]).hide();
+                        }
+                        ifHide = !ifHide;
+                        $('.hideSame').html('显示相同');
+                    }
+                    else {
+                        for (i = 0; i < repeatLineArr.length; i++) {
+                            $realdiv.find('tr').eq(repeatLineArr[i]).show();
+                            $('#fakeL').find('tr').eq(repeatLineArr[i]).show();
+                        }
+                        ifHide = !ifHide;
+                        $('.hideSame').html('隐藏相同');
+                    }
+
+                })
+
+
+                //绑定方辉的a标签.............................................................
+                //第一行第二格开始添加a标签并且绑定事件 需要跳转
+                $('#real').find('tr').eq(0).find('td:gt(0)').each(function (i, e) {
+                    $(e).append('<a></a>');
+                })
+                $('#real').find('a').css({
+                    'position': 'absolute',
+                    'width': '100%',
+                    'height': '100%',
+                    'top': 0,
+                    'left': 0,
+//                    'border':'1px solid red'
+                }).each(function (i, e) {
+                    $(e).attr('href', headerArr[i]['pid']); //这里的pid不是pid 而是一个jimi协议头的base64 url
+                })
+
+
+                //第二格开始绑定事件 需要跳转
+                $('#fakeT').find('td:gt(0)').each(function (i, e) {
+                    $(e).append('<a></a>');
+                })
+                $('#fakeT').find('a').css({
+                    'position': 'absolute',
+                    'width': '100%',
+                    'height': '100%',
+                    'top': 0,
+                    'left': 0,
+//                    'border':'1px solid red'
+                }).each(function (i, e) {
+                    $(e).attr('href', headerArr[i]['pid']); //这里的pid不是pid 而是一个jimi协议头的base64 url
+//                    console.log(headerArr[i]['pid'])
+                })
+            },
+            error: function (err) {
+                console.log('ERROR!')
+                console.log(err);
+            }
+        });
+    })
+</script>
+</body>
+</html>

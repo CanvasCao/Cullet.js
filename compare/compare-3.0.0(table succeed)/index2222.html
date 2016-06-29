@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <title></title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            word-break: break-all;
+            text-align: center;
+            box-sizing: border-box;
+
+        }
+
+        #real {
+            display: none;
+        }
+
+        #fake {
+            position: fixed;
+            display: none;
+            background-color: white;
+        }
+        #fakeLeft{
+            display: none;
+            position: fixed;
+            background-color: white;
+        }
+
+        #fakeLT{
+            display: none;
+            position: fixed;
+            background-color: white;
+            z-index: 999;
+        }
+        #div {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            /*position: fixed;*/
+            /*border: 1px solid red;*/
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<div id='div'>
+    <table id='fakeLT' border="1" cellspacing="0" cellpadding="0">
+        <tr>
+            <th>Month</th>
+        </tr>
+    </table>
+    <table id='fake' border="1" cellspacing="0" cellpadding="0">
+        <tr>
+            <th class='firC'>Month</th>
+            <th>Savings</th>
+            <th>Savings</th>
+            <th>Savings</th>
+        </tr>
+    </table>
+
+    <table id='fakeLeft' border="1" cellspacing="0" cellpadding="0">
+        <tr>
+            <th>Month</th>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+        <tr>
+            <td>Savings</td>
+        </tr>
+
+    </table>
+
+    <table id='real' border="1" cellspacing="0" cellpadding="0">
+        <tr>
+            <th class='firC'>Month</th>
+            <th>Savings</th>
+            <th>Savings</th>
+            <th>Savings</th>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+        <tr>
+            <td class='firC'>Jan</td>
+            <td>$100</td>
+            <td>$100</td>
+            <td>$100</td>
+        </tr>
+    </table>
+</div>
+<script src='js/jquery-1.8.3.min.js'></script>
+<script>
+    $(function () {
+        var thH=150; //第一行150px
+        var tdH=50; //后面都是一行50px
+
+
+        //jq...
+        var $fake = $('#fake');//顶部一行
+        var $fakeLeft=$('#fakeLeft');
+        var $fakeLT=$('#fakeLT');
+        var $real=$('#real');
+        var $firC=$('.firC')
+        var winW = $(window).width();
+        var topShow = false;
+
+        //init...
+
+//        $('table').css({width: winW * 1.4})
+//        $('th').css({width: winW * 0.4,height:thH})
+//        $('td').css({width: winW * 0.4,height:tdH})
+//        $('.firC').css({width: winW * 0.2,height:tdH})
+//
+//        $fake.find('th').css({height:tdH})
+//
+        $fake.css({width: winW * 1.4}).find('th').css({height:tdH,width: winW * 0.4})
+        $real.css({width: winW * 1.4}).find('th').css({height:thH,width: winW * 0.4}).end().find('td').css({height:tdH,width: winW * 0.4})
+        $firC.css({width: winW * 0.2})
+        $fakeLeft.css({width: winW * 0.2}).find('th').css({height:thH}).end().find('td').css({height:tdH})
+        $fakeLT.css({width: winW * 0.2}).find('th').css({height:tdH})
+
+
+        $('#real,#fakeLeft').show();
+
+        $(window).scroll(function () {
+            var scrTop=$(window).scrollTop();
+            //左边上下滚动
+            $fakeLeft.css({top:-scrTop})
+
+
+            if (!topShow && scrTop >= (thH - tdH)) {
+                $fake.show();
+                $fakeLT.show()
+                topShow = !topShow;
+            }
+            else if (topShow && scrTop < (thH - tdH)) {
+                $fake.hide();
+                $fakeLT.hide()
+                topShow = !topShow;
+            }
+
+
+        })
+
+        setInterval(function () {
+            var offL = $('#real').offset().left
+            $fake.css({'left': offL})
+//            $fake.css({'left': -200})
+        }, 300)
+    })
+</script>
+</body>
+</html>

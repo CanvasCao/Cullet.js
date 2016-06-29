@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <title></title>
+    <link rel="stylesheet" href="css/compare.css"/>
+    <style type="text/css">
+        canvas {
+            /*width: 320px;*/
+            /*height: 480px;*/
+        }
+
+        /*外框*/
+    </style>
+</head>
+<body>
+<!--width='375' height='667'-->
+<canvas id='canvas'>
+    Canvas not supported!
+</canvas>
+</body>
+<script src='js/canvasTool.js'></script>
+<script>
+    //    别的不管先把iphone6做出来
+    var canvas = document.getElementById('canvas');
+
+    var winWidth = document.documentElement.clientWidth; //屏幕宽高
+    var winHeight = document.documentElement.clientHeight;
+    var rate = winWidth / 375;
+
+    canvas.height = winHeight;
+    canvas.width = winWidth;//h w 是行内的实际像素数 375 667
+
+    var context = canvas.getContext('2d');//d必须小写
+
+    //cellH cellW
+    var cW = 100;
+    var cH = 100;
+
+    var Wnum = 4
+    var Hnum = 10
+
+
+    //init.......................................................
+    context.fillStyle = 'red'
+    context.fillRect(cW, cH, Wnum * cW, Hnum * cH)
+
+
+    //mouseEvent............................................
+    var ifDragging = false;
+    var dataBlock = {x: cW, y: cH}; //数据块起始位置 以后会移动
+    var mouseDown = {};
+    var dxdy = {}
+    canvas.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        ifDragging = true;
+        var touch = event.touches[0];
+        mouseDown.x = touch.pageX;
+        mouseDown.y = touch.pageY;
+    }, false)
+
+
+    canvas.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+        if (ifDragging) {
+            //偏移量计算
+            var touch = event.touches[0];
+            dxdy.x = touch.pageX - mouseDown.x; //就是clientXY
+            dxdy.y = touch.pageY - mouseDown.y;
+//            document.title=parseInt(dxdy.x)+'   '+parseInt(dxdy.y)
+
+            //开始重绘
+            context.clearRect(0, 0, winWidth, winHeight)
+            context.fillStyle = 'red'
+            context.fillRect(dataBlock.x + dxdy.x, dataBlock.y + dxdy.y, Wnum * cW, Hnum * cH) //x y轴偏移
+
+
+        }
+    }, false)
+
+
+    canvas.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        ifDragging = false;
+        dataBlock = {x: (dataBlock.x + dxdy.x), y: (dataBlock.y + dxdy.y)}
+        dxdy = {x: 0, y: 0};
+
+    }, false)
+
+
+</script>
+</html>

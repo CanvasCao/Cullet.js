@@ -1,0 +1,12 @@
+ //弹幕出现以后把table顶上去....................................................................
+                JM.$real.find('tr').eq(2).find('td').click(function () {
+                    var pid = ($(this).attr('data-pid'));
+                    ccm.load(pid);
+                    //'#realdiv,#fakeLdiv加paddingBottom是为了把表格拖到弹幕上方
+                    JM.$realdiv.css({'padding-bottom': JM.$cullet.height()});
+                    JM.$fakeLdiv.css({'padding-bottom': JM.$cullet.height()});
+                })
+                //'padding-bottom':0
+                $('.commentClose').click(function () {
+                    $('#realdiv,#fakeLdiv').css({'padding-bottom': 0});
+                })

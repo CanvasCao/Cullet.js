@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <title></title>
+    <link rel="stylesheet" href="css/compare.css"/>
+    <style type="text/css">
+        canvas{
+            /*width: 320px;*/
+            /*height: 480px;*/
+        }
+        /*外框*/
+    </style>
+</head>
+<body>
+<!--width='375' height='667'-->
+<canvas id='canvas'>
+    Canvas not supported!
+</canvas>
+</body>
+<script src='js/canvasTool.js'></script>
+<script>
+    //别的不管先把iphone6做出来
+    var canvas = document.getElementById('canvas');
+
+    var winWidth = document.documentElement.clientWidth; //屏幕宽高
+    var winHeight = document.documentElement.clientHeight;
+    var rate=winWidth/375;
+
+    canvas.height=winHeight;
+     canvas.width=winWidth;//h w 是行内的实际像素数 375 667
+
+    var context = canvas.getContext('2d');//d必须小写
+
+
+    var img=new Image();
+    img.src='img/test.png';
+    img.onload=function(){
+        context.drawImage(img,0,0,canvas.width,canvas.height)
+    }
+</script>
+</html>

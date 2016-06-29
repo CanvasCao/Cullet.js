@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)http://www.caoyuhao.top/tablemy.html -->
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <title></title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            word-break: break-all;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+        }
+
+        table {
+        }
+
+        td {
+            height: 200px;
+            width: 200px;
+            background-color: white;
+        }
+
+        #realdiv {
+            height: 100%;
+            width: 100%;
+            overflow: auto;
+            border: 1px solid red;
+        }
+
+        #real {
+
+        }
+
+        #fakeLdiv {
+            height: 667px;
+            border: 1px solid blue;
+            overflow: hidden;
+            z-index: 999;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+
+        #fakeL {
+
+        }
+
+        #fakeTdiv {
+            width: 375px;
+            overflow: hidden;
+            border: 1px solid green;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            background-color: green;
+            z-index: 999;
+
+        }
+
+        #fakeT {
+
+        }
+
+        #fixB {
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;
+            z-index: 1000;
+
+        }
+
+        #fixS {
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;
+
+        }
+
+        #cao {
+
+        }
+    </style>
+</head>
+<body>
+<div id='cao'></div>
+<div id="realdiv">
+    <table id='real' border="1" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+        </tr>
+    </table>
+</div>
+<div id="fakeLdiv">
+    <table id='fakeL' border="1" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+        </tr>
+        <tr>
+            <td>111</td>
+        </tr>
+    </table>
+</div>
+<div id="fakeTdiv">
+    <table id='fakeT' border="1" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+            <td>111</td>
+        </tr>
+    </table>
+</div>
+
+<table id='fixB' border="1" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>111</td>
+    </tr>
+</table>
+
+<table id='fixS' border="1" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>111</td>
+    </tr>
+</table>
+
+<script src="js/jquery-1.8.3.min.js"></script>
+<script>
+    $(function () {
+//            $('#realdiv').scroll(function(){
+//                console.log($(this).scrollTop())
+//                console.log($(this).scrollLeft())
+//            }) //测试用
+
+        var hh = 150;
+        var h = 50;
+        var w = 128;
+        var row = 10;
+        var col = 3;
+
+        var srcH=($('#realdiv').outerHeight())
+        var srcW=($('#realdiv').outerWidth())
+//        alert(srcH+"   "+srcW)
+
+        $('#real').css({width: 800, height: 1000})
+        $('#real').find('tr').css({width: 800, height: 200})
+        $('#real').find('td').css({width: 200, height: 200})
+
+        $('#fakeLdiv').css('height',srcH);
+        $('#fakeL').css({width: 200, height: 1000})
+        $('#fakeL').find('tr').css({width: 200, height: 200})
+        $('#fakeL').find('td').css({width: 200, height: 200})
+
+        $('#fakeTdiv').css('width',srcW);
+        $('#fakeT').css({width: 800, height: 200})
+        $('#fakeT').find('tr').css({width: 800, height: 200})
+        $('#fakeT').find('td').css({width: 200, height: 200})
+
+
+        $('#realdiv').scroll(function () {
+            var scrollTop = $(this).scrollTop();
+            var scrollLeft = $(this).scrollLeft();
+
+            $('#fakeLdiv').scrollTop(scrollTop)
+            $('#fakeTdiv').scrollLeft(scrollLeft)
+
+            if (scrollTop >= 200) {
+                $('#fakeTdiv').show();
+                $('#fixB').show();
+
+            }
+            else {
+                $('#fakeTdiv').hide();
+                $('#fixB').hide();
+
+            }
+        })
+    })
+</script>
+</body>
+</html>

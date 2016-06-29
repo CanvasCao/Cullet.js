@@ -1,0 +1,120 @@
+<!--加入类和对象-->
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <title></title>
+    <link rel="stylesheet" href="css/compare.css"/>
+    <style type="text/css">
+        canvas {
+            /*width: 320px;*/
+            /*height: 480px;*/
+        }
+    </style>
+</head>
+<body>
+<!--width='375' height='667'-->
+<canvas id='canvas'>
+    Canvas not supported!
+</canvas>
+</body>
+<script src='js/TableBlock.js'></script>
+<script src='js/data.js'></script>
+<script>
+    //    别的不管先把iphone6做出来
+    var canvas = document.getElementById('canvas');
+
+    //获得屏幕宽高和基于i6的放大比例
+    var winWidth = document.documentElement.clientWidth; //屏幕宽高
+    var winHeight = document.documentElement.clientHeight;
+    var rate = winWidth / 375;
+
+    //设置画布永远等于屏幕
+    canvas.height = winHeight;
+    canvas.width = winWidth;//h w 是行内的实际像素数 375 667
+
+    //上下文
+    var context = canvas.getContext('2d');//d必须小写
+
+    //网格的宽高 先是一个100的矩形 以后会根据屏幕缩放
+    var cell = {lx: 70, rx: 120, y: 60};
+    var data={x:4,y:10}; //数据块的行和列
+
+    //实例化应该是调用ajax以后
+    var dataBlock = new TableBlock({
+        Wnum: data.x, Hnum: data.y,
+        locX: cell.lx, locY: cell.y,
+        cellX:cell.rx,cellY:cell.y,
+        fillStyle: 'red'
+    }, context)
+    var topBlock = new TableBlock({
+        Wnum: data.x, Hnum: 1,
+        locX: cell.lx, locY: 0,
+        cellX:cell.rx,cellY:cell.y,
+        fillStyle: 'green'
+    }, context)
+    var leftBlock = new TableBlock({
+        Wnum: 1, Hnum: data.y,
+        locX: 0, locY: cell.y,
+        cellX:cell.lx,cellY:cell.y,
+        fillStyle: 'blue'
+    }, context)
+    var fixedBlock = new TableBlock({
+        Wnum: 1, Hnum: 1,
+        locX: 0, locY: 0,
+        cellX:cell.lx,cellY:cell.y,
+        fillStyle: 'yellow'
+    }, context)
+
+
+    //mouseEvent............................................
+    var ifDragging = false;
+    var mouseDown = {};//某次鼠标按下的起点位置
+    var dxdy = {};//鼠标按下后移动位置
+    var moveDistance={};//右下角数据块离开起始位置的距离
+
+    canvas.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        ifDragging = true;
+        var touch = e.touches[0];
+        mouseDown.x = touch.pageX;
+        mouseDown.y = touch.pageY;
+    }, false)
+
+
+    canvas.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+        if (ifDragging) {
+            //偏移量计算
+            var touch = e.touches[0];
+            dxdy.x = touch.pageX - mouseDown.x; //就是clientXY
+            dxdy.y = touch.pageY - mouseDown.y;
+
+            //开始重绘
+            context.clearRect(0, 0, winWidth, winHeight)
+            dataBlock.Render(dxdy.x, dxdy.y);
+            topBlock.Render(dxdy.x, 0);
+            leftBlock.Render(0, dxdy.y);
+            fixedBlock.Render();
+
+        }
+    }, false)
+
+
+    canvas.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        ifDragging = false;
+
+        dataBlock.FixLocation(dxdy.x, dxdy.y);
+        topBlock.FixLocation(dxdy.x, 0);
+        leftBlock.FixLocation(0, dxdy.y);//fixedBlock又不用修正下次绘画的起始位置
+        dxdy = {x: 0, y: 0};//全局还原
+
+
+    }, false)
+
+
+</script>
+</html>

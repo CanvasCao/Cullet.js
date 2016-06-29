@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        onload=function(){
+            String.prototype.GetCharLength = function()
+            {
+                return this.replace(/[^\x00-\xff]/g,"00").length
+
+            }
+
+            var a='我iii';
+            alert(a.GetCharLength())
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

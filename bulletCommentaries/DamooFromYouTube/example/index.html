@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>弹幕</title>
+    <style>
+        *{
+            padding: 0;
+            margin:0;
+            list-style: none;
+            text-decoration: none;
+        }
+        html,body{
+            height: 100%;
+        }
+        #dm-main {
+            height: 100%;
+        }
+        #dm-screen {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="dm-main">
+    <div id="dm-screen"></div>
+</div>
+
+<script src='damoo.min.js'></script>
+<script>
+    var damoo = Damoo(document.getElementById('dm-screen'), 'dm-canvas', 20);
+    damoo.start();
+
+    //    damoo.emit("Damoo is awesome!");
+
+    // With attributes
+
+
+    setInterval(function () {
+        damoo.emit({text: "Damoo is awesome!", color: "#f49"});
+    }, 200)
+</script>
+</body>
+</html>

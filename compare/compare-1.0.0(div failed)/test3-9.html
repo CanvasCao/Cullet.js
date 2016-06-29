@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <link rel="stylesheet" href="css/compare.css"/>
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 1000px;
+        }
+
+
+
+        #f1 {
+            position: fixed;
+            height: 100px;
+            width: 800px;
+            margin-left: 200px;
+            top: 0;
+            z-index: 99;
+        }
+        #f1 div{
+            float: left;
+            height: 100px;
+            border: 1px solid red;
+            width: 200px;
+            background-color: #52d200;
+
+        }
+        #content{
+            position: absolute;
+            left: 200px;
+            top: 100px;
+        }
+        .d1 {
+            height: 100px;
+            width: 800px;
+        }
+
+        .d1 div {
+            float: left;
+            height: 100px;
+            border: 1px solid red;
+            width: 200px;
+            background-color: #0093ff;
+        }
+    </style>
+
+</head>
+<body>
+<div id='f1'>
+    <div>111</div>
+    <div>111</div>
+    <div>111</div>
+    <div>111</div>
+</div>
+<div id='content'>
+    <div class='d1'>
+        <div>222</div>
+        <div>111</div>
+        <div>111</div>
+        <div>111</div>
+    </div>
+    <div class='d1'>
+        <div>333</div>
+        <div>111</div>
+        <div>111</div>
+        <div>111</div>
+    </div>
+    <div class='d1'>
+        <div>444</div>
+        <div>111</div>
+        <div>111</div>
+        <div>111</div>
+    </div>
+</div>
+
+<!--<script src='js/zepto.js'></script>-->
+<script src='js/jquery-1.8.3.min.js'></script>
+<script>
+    $(function () {
+        $(window).scroll(function(){
+
+        })
+
+        setInterval(function(){
+            var l=$(window).scrollLeft();
+            $('#f1').css({'margin-left':200-l})
+        },1)
+    })
+
+</script>
+</body>
+</html>
