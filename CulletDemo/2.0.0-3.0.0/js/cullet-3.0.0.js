@@ -8,14 +8,7 @@
  */
 
 /*!
- 2.0.0
- 更新背景颜色
- 更新弹幕样式
- 点赞样式
- 点赞存数据库
- 取消本人弹幕在右侧设定
-
- **基础算法重写 弹幕消失不再清楚内存 只是停止移动等待下次队列启动
+ 3.0.0 使用animationFrame
  */
 
 ;
@@ -228,7 +221,7 @@
             that.moving = false;
         },
         cssCell: function (property, value) {
-            if (arguments.length==1) {
+            if (arguments.length == 1) {
                 return (parseFloat(this.jqueryMap.$cell.css(property))); //Math.floor就不会出现弹幕偶然卡住的情况了
             }
             else {
@@ -475,8 +468,8 @@
 
             $.ajax({
                 type: "get",
-                url: jimiHost + '/culletSelect.php?pid=' + pid,
-                //url: 'package.json',
+                //url: jimiHost + '/culletSelect.php?pid=' + pid,
+                url: 'package.json',
                 dataType: "jsonp",
                 jsonp: "callback",
                 jsonpCallback: "jsonpcallback",
