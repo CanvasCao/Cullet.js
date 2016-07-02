@@ -59,7 +59,7 @@
 
     controller.culletInsert = function (data, callback) {
 
-        console.log(JSON.stringify(data))
+        //console.log(JSON.stringify(data))
         $.ajax({
             type: "post",
             url: jimiHost + '/culletInsert.php',

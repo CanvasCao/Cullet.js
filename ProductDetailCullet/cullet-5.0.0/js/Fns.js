@@ -6,7 +6,7 @@ function twoDmsToOneDms(twoDmsArr) {
         });
 
         //空三条弹幕..............
-        for (i = 0; i <2; i++) {
+        for (i = 0; i < 2; i++) {
             resArr.push(null);
         }
 

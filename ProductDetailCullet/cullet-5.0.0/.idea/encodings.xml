@@ -2,7 +2,10 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/js/Fns.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/js/Fns.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/js/class/commentCell.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/js/class/commentCell.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/js/globalManager/globalManager.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/js/globalManager/globalManager.js" charset="UTF-8" />
   </component>
 </project>
