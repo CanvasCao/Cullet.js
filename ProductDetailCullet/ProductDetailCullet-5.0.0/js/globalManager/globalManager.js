@@ -22,5 +22,7 @@
 
     }
 
+    GM.version = '';
+
     w.GM = w.globalManager = globalManager;
 })(window, document, $);

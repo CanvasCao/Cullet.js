@@ -209,38 +209,52 @@
 
             //回复逻辑..........................................................
             this.JM.$cell.find('.commentReply').click(function (e) {
-                e.stopPropagation();
-                GM.changeState('reply');
+                    e.stopPropagation();
+                    GM.changeState('reply');
 
-                //记录被回复弹幕..................................
-                GM.beReplyedCommentCell = that;
+                    //记录被回复弹幕..................................
+                    GM.beReplyedCommentCell = that;
 
-                //jsBridge不使用本行..............................
-                //GM.inputBox.C.find('input').focus();
-
-                setupWebViewJavascriptBridge(function (bridge) {
-
-                    //回复逻辑
-                    that.JM.$cell.find('.commentReply').click(function (e) {
-                        //alert('方辉 这里你要让输入框focus');
-                        e.stopPropagation();
-                        GM.changeState('reply');
-
-                        GM.beReplyedCommentCell = that;
+                    //jsBridge不使用本行..............................
+                    if (GM.version == 'Android') {
                         var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
                         var retxt = GM.beReplyedCommentCell.txt;
-                        bridge.callHandler('testObjcCallback', {
+                        var json = {
                             inputBoxFocus: {
                                 reid: reid,
                                 retxt: retxt
                             }
-                        }, function (response) {
+                        };
+                        androidJsBridge.webToAndroid(JSON.stringify(json));
+                        ;
+                    }
+                    else if (GM.version == 'IOS') {
+                        setupWebViewJavascriptBridge(function (bridge) {
+                            //回复逻辑
+                            that.JM.$cell.find('.commentReply').click(function (e) {
+                                e.stopPropagation();
+                                GM.changeState('reply');
+
+                                GM.beReplyedCommentCell = that;
+                                var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
+                                var retxt = GM.beReplyedCommentCell.txt;
+                                bridge.callHandler('testObjcCallback', {
+                                    inputBoxFocus: {
+                                        reid: reid,
+                                        retxt: retxt
+                                    }
+                                }, function (response) {
+                                })
+                            });
                         })
-                    });
-                })
+                    } else {
+                        GM.inputBox.C.find('input').focus();
+                    }
 
 
-            });
+                }
+            )
+            ;
 
         },
 
@@ -268,7 +282,8 @@
                 that.die();
             }
             ;
-        },
+        }
+        ,
         die: function () {
             var that = this;
             //删除分两步 一个是ccm数组里删除自己 另一个是 删除dom节点
@@ -278,7 +293,8 @@
             that = null;
             delete(that);
 
-        },
+        }
+        ,
         cssCell: function (property, value) {
             var that = this;
             if (arguments.length == 1) {
@@ -288,12 +304,14 @@
                 this.jqueryMap.$cell.css(property, value);
             }
             ;
-        },
+        }
+        ,
         getJqueryDom: function () {
             var that = this;
             return that.JM.$cell;
         }
-    };
+    }
+    ;
 
     w.CommentCell = CommentCell;
 })
