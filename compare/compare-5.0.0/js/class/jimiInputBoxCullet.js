@@ -172,7 +172,7 @@
                             comment: txt,
                             expression: expression,
                             reid: reid,
-                            jsonpcallback: searchJson.jsonpcallback,
+                            jsonpcallback: 1,
                         }, function (data) {
                             var commentsPK = data.cid;
                             var json = {
@@ -200,7 +200,7 @@
                             comment: txt,
                             expression: expression,
                             reid: reid,
-                            jsonpcallback: searchJson.jsonpcallback,
+                            jsonpcallback:1,
                         }, function (data) {
                             var commentsPK = data.cid;
                             var json = {
