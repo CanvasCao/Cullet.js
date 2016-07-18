@@ -12,7 +12,7 @@
     globalManager.inputBox = null;
     globalManager.beReplyedCommentCell = null;
 
-    //add代表插入 reply代表回复 是增加弹幕还是回复弹幕的状态
+    //add代表插入 reply代表回复 是增加弹幕还是回复弹幕的状态 //原来是状态机
     globalManager.state = 'add';
     globalManager.changeState = function (state) {
         GM.state = state;
@@ -22,7 +22,5 @@
 
     }
 
-
-    globalManager.ifShare = null;
     w.GM = w.globalManager = globalManager;
 })(window, document, $);

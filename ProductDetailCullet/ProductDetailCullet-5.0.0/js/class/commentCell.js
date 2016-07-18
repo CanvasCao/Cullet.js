@@ -43,12 +43,18 @@
             this.initConfig();
             this.createDom();
             this.initCSS();
-            this.bindEvent();
+            if (!GM.ifShare) {
+                this.bindEvent();
+            }
         },
         initConfig: function () {
             var that = this;
+
+            //不等于0 就是 表情 否则1 2 10 就是头像
             that.config.commentImg = (that.userType != 0) ? '<img class="commentImg" src="' + that.imgUrl + '" />' : '<img class="commentImg" src="img/expression/' + that.expression + '.png" />';
-            that.config.vipBg = (that.userType != 0) ? '<img class="commentVipBg" src="img/vip' + that.userType + '.png" />' : '';
+
+            //vip的背景只有1 2有
+            that.config.vipBg = (that.userType == 1 || that.userType == 2) ? '<img class="commentVipBg" src="img/vip' + that.userType + '.png" />' : '';
             if (that.userType == 0) {
                 that.config.normalColor = 'rgba(0,0,0,0.45)';
                 that.config.likedColor = 'rgba(56,129,224,0.9)';
@@ -56,6 +62,8 @@
                 that.config.normalColor = that.config.likedColor = 'rgba(255,0,42,0.45)';
             } else if (that.userType == 2) {
                 that.config.normalColor = that.config.likedColor = 'rgba(238,162,0,0.55)';
+            } else if (that.userType == 10) {
+                that.config.normalColor = that.config.likedColor = 'rgba(56,129,224,0.9)';
             }
         },
         createDom: function () {
@@ -127,7 +135,6 @@
                 height: 15,
                 padding: 2,
                 display: 'none',
-
             });
 
             this.JM.$cell.find('.commentReply').css({
@@ -191,19 +198,19 @@
                 that.liked = !that.liked;
                 GM.ccm.start();
 
-                //ajax......................................................
+                //ajax........................................................
                 if (!that.commentsPK) {//没有服务器主键说明不用ajax
                     return;
                 }
                 ;
 
                 //给服务器发ajax点赞
-                if (!GM.ccm.ajaxedObject.hasOwnProperty(that.commentsPK)) {//没有
-                    GM.ccm.ajaxedObject[that.commentsPK] = 1;
-
-                    controller.cullectSupport({commentId: that.commentsPK}, null);
-                }
-                ;
+                //if (!GM.ccm.ajaxedObject.hasOwnProperty(that.commentsPK)) {//没有
+                //    GM.ccm.ajaxedObject[that.commentsPK] = 1;
+                //
+                //    controller.cullectSupport({commentId: that.commentsPK}, null);
+                //}
+                //;
             });
 
 
@@ -222,7 +229,7 @@
                         var json = {
                             inputBoxFocus: {
                                 reid: reid,
-                                retxt: retxt
+                                retxt: retxt,
                             }
                         };
                         androidJsBridge.webToAndroid(JSON.stringify(json));
@@ -282,8 +289,7 @@
                 that.die();
             }
             ;
-        }
-        ,
+        },
         die: function () {
             var that = this;
             //删除分两步 一个是ccm数组里删除自己 另一个是 删除dom节点
@@ -293,8 +299,7 @@
             that = null;
             delete(that);
 
-        }
-        ,
+        },
         cssCell: function (property, value) {
             var that = this;
             if (arguments.length == 1) {
@@ -304,14 +309,12 @@
                 this.jqueryMap.$cell.css(property, value);
             }
             ;
-        }
-        ,
+        },
         getJqueryDom: function () {
             var that = this;
             return that.JM.$cell;
         }
-    }
-    ;
+    };
 
     w.CommentCell = CommentCell;
 })

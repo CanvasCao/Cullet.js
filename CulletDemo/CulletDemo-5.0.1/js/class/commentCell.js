@@ -43,12 +43,18 @@
             this.initConfig();
             this.createDom();
             this.initCSS();
-            //this.bindEvent();
+            if (!GM.ifShare) {
+                this.bindEvent();
+            }
         },
         initConfig: function () {
             var that = this;
+
+            //不等于0 就是 表情 否则1 2 10 就是头像
             that.config.commentImg = (that.userType != 0) ? '<img class="commentImg" src="' + that.imgUrl + '" />' : '<img class="commentImg" src="img/expression/' + that.expression + '.png" />';
-            that.config.vipBg = (that.userType != 0) ? '<img class="commentVipBg" src="img/vip' + that.userType + '.png" />' : '';
+
+            //vip的背景只有1 2有
+            that.config.vipBg = (that.userType == 1 || that.userType == 2) ? '<img class="commentVipBg" src="img/vip' + that.userType + '.png" />' : '';
             if (that.userType == 0) {
                 that.config.normalColor = 'rgba(0,0,0,0.45)';
                 that.config.likedColor = 'rgba(56,129,224,0.9)';
@@ -56,6 +62,8 @@
                 that.config.normalColor = that.config.likedColor = 'rgba(255,0,42,0.45)';
             } else if (that.userType == 2) {
                 that.config.normalColor = that.config.likedColor = 'rgba(238,162,0,0.55)';
+            } else if (that.userType == 10) {
+                that.config.normalColor = that.config.likedColor = 'rgba(56,129,224,0.9)';
             }
         },
         createDom: function () {
@@ -127,7 +135,6 @@
                 height: 15,
                 padding: 2,
                 display: 'none',
-
             });
 
             this.JM.$cell.find('.commentReply').css({
@@ -158,7 +165,6 @@
             //初次点击 出现 喜欢和回复的选项图片.......................................
             //ccm的是否在移动state改变...............................................
             this.JM.$cell.click(function () {
-
                 GM.changeState('add');
 
                 if (GM.ccm.moveState) {
@@ -199,12 +205,12 @@
                 ;
 
                 //给服务器发ajax点赞
-                if (!GM.ccm.ajaxedObject.hasOwnProperty(that.commentsPK)) {//没有
-                    GM.ccm.ajaxedObject[that.commentsPK] = 1;
-
-                    controller.cullectSupport({commentId: that.commentsPK}, null);
-                }
-                ;
+                //if (!GM.ccm.ajaxedObject.hasOwnProperty(that.commentsPK)) {//没有
+                //    GM.ccm.ajaxedObject[that.commentsPK] = 1;
+                //
+                //    controller.cullectSupport({commentId: that.commentsPK}, null);
+                //}
+                //;
             });
 
 

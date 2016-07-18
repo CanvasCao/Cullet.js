@@ -1,4 +1,4 @@
-function appendTable(ifshare) {
+function appendTable() {
 
     //initParas
     var srcH = $(window).height();
@@ -164,7 +164,7 @@ function appendTable(ifshare) {
             $('#line2col1').css({'width': (leftW), 'float': 'left'});
 
 
-            if (!ifshare) {
+            if (!GM.ifShare) {
                 $('#line2col2').css({
                     'width': (mainW * 2),
                     'float': 'right',
@@ -320,7 +320,7 @@ function appendTable(ifshare) {
                 }
             );
 
-            if (!ifshare) {
+            if (!GM.ifShare) {
                 GM.ib = GM.inputBox = new JimiInputBox('.jimiInputBox');
             }
 

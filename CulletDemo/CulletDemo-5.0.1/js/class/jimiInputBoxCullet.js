@@ -125,6 +125,7 @@
                 'margin-left': '15px',
             })
 
+
             $(this.C).find('.jimiInputBoxSubmit').css({
                 position: 'absolute',
                 right: '10px',
@@ -166,13 +167,12 @@
                         var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
 
                         controller.culletInsert({
-                            //pid: searchJson.pid,
-                            pid: GM.ccm.pid,
+                            pid: searchJson.pid,
                             uid: searchJson.uid,
                             comment: txt,
                             expression: expression,
                             reid: reid,
-                            jsonpcallback: 1,
+                            jsonpcallback: searchJson.jsonpcallback,
                         }, function (data) {
                             var commentsPK = data.cid;
                             var json = {
@@ -194,13 +194,12 @@
                         var reid = 0;
 
                         controller.culletInsert({
-                            //pid: searchJson.pid,
-                            pid: GM.ccm.pid,
+                            pid: searchJson.pid,
                             uid: searchJson.uid,
                             comment: txt,
                             expression: expression,
                             reid: reid,
-                            jsonpcallback: 1,
+                            jsonpcallback: searchJson.jsonpcallback,
                         }, function (data) {
                             var commentsPK = data.cid;
                             var json = {

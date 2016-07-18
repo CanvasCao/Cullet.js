@@ -30,7 +30,9 @@
 <script>
     $(function () {
         if (!window.location.search) {
-            window.location = window.location + '?pid=5682a077efb80c4e26c49af1&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg&jsonpcallback=1'
+//            5682a0aeefb80c4e26c4a8f5&uid=10059
+
+            window.location = window.location + '?pid=5682a0aeefb80c4e26c4a8f5&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg&jsonpcallback=1'
         }
         window.searchJson = searchJson = window.location.search.searchToJson();
 
@@ -38,7 +40,7 @@
         //FastClick.....................................................
         FastClick.attach(document.body);
 
-
+        GM.ifShare = false;
         //弹幕............................................................
         GM.ccm = new CommentCellManager('#cullet',
                 {
@@ -60,8 +62,7 @@
         }, false)
 
 
-
-        GM.version='IOS';
+        GM.version = 'IOS';
         setupWebViewJavascriptBridge(function (bridge) {
             //IOSToWeb.............................................................
             bridge.registerHandler('testJavascriptHandler', function (data, responseCallback) {

@@ -24,5 +24,7 @@
 
     GM.version = '';
 
+    GM.ifShare='';
+
     w.GM = w.globalManager = globalManager;
 })(window, document, $);
