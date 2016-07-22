@@ -44,7 +44,6 @@
             this.createDom();
             this.initCSS();
             if (!GM.ifShare) {
-                alert(GM.ifShare)
                 this.bindEvent();
             }
         },
