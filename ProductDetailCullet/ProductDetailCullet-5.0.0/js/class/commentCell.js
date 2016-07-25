@@ -14,7 +14,7 @@
         this.lineNum = json.lineNum;//不能不给
         this.top = json.top; //出身位置一定是top随机 left 100%（就是屏幕右端）
         this.speed = json.speed;
-        this.commentIndex = json.commentIndex || -1;//索引
+        this.commentIndex = json.commentIndex;//索引
 
         this.imgUrl = json.imgUrl;
         this.id = new Date().getTime().toString() + parseInt(Math.random() * 10000);//时间戳+随机数
@@ -29,6 +29,10 @@
         if (GM.ccm.likedObject[that.commentsPK] == 1) {
             that.liked = true;
         }
+
+
+        //假的就塞一个不透明的进去
+        this.ifFake = json.ifFake;
 
         this.JM = this.jqueryMap = {};
 
@@ -84,6 +88,7 @@
         },
         initCSS: function () {
             var that = this;
+
 
             //设置当前弹幕本身的css
             this.JM.$cell.css({left: $(w).width()});
@@ -158,6 +163,10 @@
             }
             ;
 
+            if (that.ifFake) {
+                that.JM.$cell.css({opacity: 0});
+            }
+
         },
         bindEvent: function () {
             var that = this;
@@ -216,52 +225,50 @@
 
             //回复逻辑..........................................................
             this.JM.$cell.find('.commentReply').click(function (e) {
-                    e.stopPropagation();
-                    GM.changeState('reply');
+                e.stopPropagation();
+                GM.changeState('reply');
 
-                    //记录被回复弹幕..................................
-                    GM.beReplyedCommentCell = that;
+                //记录被回复弹幕..................................
+                GM.beReplyedCommentCell = that;
+                console.log('===============' + GM.beReplyedCommentCell.commentIndex);
 
-                    //jsBridge不使用本行..............................
-                    if (GM.version == 'Android') {
-                        var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
-                        var retxt = GM.beReplyedCommentCell.txt;
-                        var json = {
-                            inputBoxFocus: {
-                                reid: reid,
-                                retxt: retxt,
-                            }
-                        };
-                        androidJsBridge.webToAndroid(JSON.stringify(json));
-                        ;
-                    }
-                    else if (GM.version == 'IOS') {
-                        setupWebViewJavascriptBridge(function (bridge) {
-                            //回复逻辑
-                            that.JM.$cell.find('.commentReply').click(function (e) {
-                                e.stopPropagation();
-                                GM.changeState('reply');
-
-                                GM.beReplyedCommentCell = that;
-                                var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
-                                var retxt = GM.beReplyedCommentCell.txt;
-                                bridge.callHandler('testObjcCallback', {
-                                    inputBoxFocus: {
-                                        reid: reid,
-                                        retxt: retxt
-                                    }
-                                }, function (response) {
-                                })
-                            });
-                        })
-                    } else {
-                        GM.inputBox.C.find('input').focus();
-                    }
-
-
+                //jsBridge不使用本行..............................
+                if (GM.version == 'Android') {
+                    var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
+                    var retxt = GM.beReplyedCommentCell.txt;
+                    var json = {
+                        inputBoxFocus: {
+                            reid: reid,
+                            retxt: retxt,
+                        }
+                    };
+                    androidJsBridge.webToAndroid(JSON.stringify(json));
+                    ;
                 }
-            )
-            ;
+                else if (GM.version == 'IOS') {
+                    setupWebViewJavascriptBridge(function (bridge) {
+                        //回复逻辑
+                        that.JM.$cell.find('.commentReply').click(function (e) {
+                            e.stopPropagation();
+                            GM.changeState('reply');
+
+                            GM.beReplyedCommentCell = that;
+                            var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
+                            var retxt = GM.beReplyedCommentCell.txt;
+                            bridge.callHandler('testObjcCallback', {
+                                inputBoxFocus: {
+                                    reid: reid,
+                                    retxt: retxt
+                                }
+                            }, function (response) {
+                            })
+                        });
+                    })
+                } else {
+                    GM.inputBox.C.find('input').focus();
+                }
+
+            });
 
         },
 
@@ -277,7 +284,7 @@
                 cellLeft = that.cssCell('left');
                 cellWidth = that.cssCell('width');
 
-                if ((cellLeft + cellWidth + 20) < $(w).width()) {
+                if ((cellLeft + cellWidth + 10) < $(w).width()) {
                     that.occupied = false;
                 }
                 ;

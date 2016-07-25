@@ -36,6 +36,9 @@
         this.commentCellArr = [];//commentCell对象
         this.commentLimit = 10;
 
+        //最后一行的行数为了之后的代码能连起来
+        this.lastLineNum=0;
+
 
         //维护的弹幕是否点赞列表
         //cellid  liked ajaxed
@@ -133,6 +136,8 @@
             var that = this;
 
             //服务器的弹幕全部显示了 或者 显示数量超过limit值了........................
+
+            //+2是因为中间可能插了两条null
             if (that.commentCellArr.length >= that.serverCommentArr.length || that.commentCellArr.length > that.commentLimit) {
                 return;
             }
@@ -152,14 +157,23 @@
 
             //如果是null 为了会话组间隔 当前发送轮空
             if (!adaptedJson) {
-                that.commentIndex = (that.commentIndex + 1) >= that.serverCommentArr.length ? 0 : (that.commentIndex + 1);
-                return;
+                //that.commentIndex = (that.commentIndex + 1) >= that.serverCommentArr.length ? 0 : (that.commentIndex + 1);
+                //return;
+                adaptedJson = {
+                    txt: 'fake',
+                    ifFake: true,
+                };
             }
+
             adaptedJson.top = top;
             adaptedJson.lineNum = lineNum;
             adaptedJson.speed = that.speedHash[that.speedKey];
             adaptedJson.commentIndex = that.commentIndex;
             that.commentCellArr.push(new CommentCell(that.C, adaptedJson));
+
+            //push以后记录一下最后一行的行数..............................
+            that.lastLineNum=adaptedJson.lineNum;
+
 
             //下标验收
             that.commentIndex = (that.commentIndex + 1) >= that.serverCommentArr.length ? 0 : (that.commentIndex + 1);
@@ -178,12 +192,16 @@
                 }
                 ;
 
+
                 if (that.commentCellArr.length) {
                     for (i = 0; i < that.commentCellArr.length; i++) {
                         if (that.commentCellArr[i].occupied) {
                             that.lineResArr = _.without(that.lineResArr, that.commentCellArr[i].lineNum);
                         }
                     }
+
+                    //上一步计算出了所有的没有occupy的行数 现在我去并上上一条的+-1的行数 计算出最后可以随机的行数
+                    that.lineResArr=_.intersection(that.lineResArr,[that.lastLineNum-1,that.lastLineNum,that.lastLineNum+1]);
                 }
                 ;
 
@@ -306,6 +324,7 @@
             var $dom = newCommentCell.getJqueryDom();
             $dom.css({left: 2 * $(w).width()}).animate({left: replyedLeft + replyedWidth - 40}, 'normal', 'linear', function () {
                 that.commentCellArr.push(newCommentCell);
+                console.log("============" + GM.beReplyedCommentCell.commentIndex);
                 that.serverCommentArr.splice(GM.beReplyedCommentCell.commentIndex + 1, 0, adaptedJson);
             });
 

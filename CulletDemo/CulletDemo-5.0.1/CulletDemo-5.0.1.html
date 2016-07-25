@@ -85,7 +85,7 @@
     $(function () {
         if (!window.location.search) {
 //            window.location = window.location + '?pid=56f57a02efb80c57428c7451&uid=10002';
-            window.location = window.location + '?pid=5682a077efb80c4e26c49af1&cate=6&uid=10000&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg&jsonpcallback=1'
+            window.location = window.location + '?pid=56f57a02efb80c57428c7451&cate=6&uid=10000&usertype=0&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg&jsonpcallback=1'
         }
         window.searchJson = searchJson = (window.location.search.searchToJson());
 
@@ -95,7 +95,7 @@
 
 
         GM.ifShare = false;
-        //弹幕............................................................
+        //弹幕...........................................................
         GM.ccm = new CommentCellManager('#cullet',
                 {
                     serverUrl: jimiHost + '/culletSelect.php',

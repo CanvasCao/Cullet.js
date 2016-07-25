@@ -14,7 +14,7 @@
         this.lineNum = json.lineNum;//不能不给
         this.top = json.top; //出身位置一定是top随机 left 100%（就是屏幕右端）
         this.speed = json.speed;
-        this.commentIndex = json.commentIndex || -1;//索引
+        this.commentIndex = json.commentIndex;//索引
 
         this.imgUrl = json.imgUrl;
         this.id = new Date().getTime().toString() + parseInt(Math.random() * 10000);//时间戳+随机数
@@ -29,6 +29,10 @@
         if (GM.ccm.likedObject[that.commentsPK] == 1) {
             that.liked = true;
         }
+
+
+        //假的就塞一个不透明的进去
+        this.ifFake = json.ifFake;
 
         this.JM = this.jqueryMap = {};
 
@@ -84,6 +88,7 @@
         },
         initCSS: function () {
             var that = this;
+
 
             //设置当前弹幕本身的css
             this.JM.$cell.css({left: $(w).width()});
@@ -158,6 +163,10 @@
             }
             ;
 
+            if (that.ifFake) {
+                that.JM.$cell.css({opacity: 0});
+            }
+
         },
         bindEvent: function () {
             var that = this;
@@ -221,6 +230,7 @@
 
                 //记录被回复弹幕..................................
                 GM.beReplyedCommentCell = that;
+                console.log('===============' + GM.beReplyedCommentCell.commentIndex);
 
                 //jsBridge不使用本行..............................
                 GM.inputBox.C.find('input').focus();
@@ -241,7 +251,7 @@
                 cellLeft = that.cssCell('left');
                 cellWidth = that.cssCell('width');
 
-                if ((cellLeft + cellWidth + 20) < $(w).width()) {
+                if ((cellLeft + cellWidth + 10) < $(w).width()) {
                     that.occupied = false;
                 }
                 ;
