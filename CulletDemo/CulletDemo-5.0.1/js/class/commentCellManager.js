@@ -34,7 +34,7 @@
         this.serverCommentArr = [];//服务器的数据 json {"commentsPK":"708","uid":null,"txt":"好东东","expression":"2"},
         this.commentIndex = 0;//索引值
         this.commentCellArr = [];//commentCell对象
-        this.commentLimit = 10;
+        this.commentLimit = 15;
 
         //最后一行的行数为了之后的代码能连起来
         this.lastLineNum=0;
@@ -60,7 +60,7 @@
         this.moveState;
         this.moveFPS = 100;
         this.moveTimer = null;
-        this.pushFPS = 2.2;
+        this.pushFPS = 4.2;
         this.pushTimer = null;
 
 
