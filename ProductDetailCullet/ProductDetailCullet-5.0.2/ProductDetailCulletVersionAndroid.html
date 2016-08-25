@@ -67,10 +67,10 @@
         function callJS() {
             var data = JSON.parse(androidJsBridge.androidToWeb());
             if (data.ccmStart) {
-                ccm.start();
+                GM.ccm.start();
             }
             else if (data.ccmPause) {
-                ccm.pause();
+                GM.ccm.pause();
             }
             else if (data.ccmAdd) {
                 var json = data.ccmAdd;
