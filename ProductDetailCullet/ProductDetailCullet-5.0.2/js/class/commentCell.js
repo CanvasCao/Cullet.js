@@ -7,6 +7,7 @@
 //弹幕CommentCell与dom有关 因为dom是他的表现层
     function CommentCell(container, json) {
         var that = this;
+
         this.C = this.container = (typeof container == 'string') ? $(container) : container;
         this.json = json;
 
@@ -18,10 +19,11 @@
 
         this.imgUrl = json.imgUrl;
         this.id = new Date().getTime().toString() + parseInt(Math.random() * 10000);//时间戳+随机数
-        this.commentsPK = json.commentsPK; //数据库comments表的主键 作为id
+        this.commentsPK = json.commentsPK; //数据库comments表的主键
         this.reid = json.reid;
+        this.uid = json.uid;
 
-        this.userType = json.userType || 0;//普通是0 女王是12
+        this.userType = json.userType || 0;//普通是0 女王是12 10是机密小秘书
         this.expression = json.expression || 1;//表情是1-5
 
         this.occupied = true; //是否占据屏幕右侧
@@ -31,11 +33,12 @@
         }
 
 
-        //假的就塞一个不透明的进去
+        //假的就塞一个不透明的进去..................................
         this.ifFake = json.ifFake;
 
         this.JM = this.jqueryMap = {};
 
+        //配置文件..................................
         this.config = {};
 
         this.init();
@@ -54,7 +57,7 @@
         initConfig: function () {
             var that = this;
 
-            //不等于0 就是 表情 否则1 2 //10 就是头像
+            //不等于0 就是 表情 否则1 2 //10 就是肌秘小秘书
             that.config.commentImg = (that.userType != 0) ? '<img class="commentImg" src="' + that.imgUrl + '" />' : '<img class="commentImg" src="img/expression/' + that.expression + '.png" />';
 
             //vip的背景只有1 2有
@@ -63,11 +66,11 @@
                 that.config.normalColor = 'rgba(0,0,0,0.45)';
                 that.config.likedColor = 'rgba(56,129,224,0.9)';
             } else if (that.userType == 1) {
-                that.config.normalColor = that.config.likedColor = 'rgba(255,0,42,0.45)';
+                that.config.normalColor = that.config.likedColor = 'rgba(255,0,42,0.45)'; // 红
             } else if (that.userType == 2) {
-                that.config.normalColor = that.config.likedColor = 'rgba(238,162,0,0.55)';
+                that.config.normalColor = that.config.likedColor = 'rgba(238,162,0,0.55)';// 黄
             } else if (that.userType == 10) {
-                that.config.normalColor = that.config.likedColor = 'rgba(56,129,224,0.9)';
+                that.config.normalColor = that.config.likedColor = 'rgba(56,129,224,0.9)';// 小秘书 肌秘蓝
             }
         },
         createDom: function () {
@@ -158,7 +161,7 @@
                 this.JM.$cell.css('background', that.config.likedColor);
                 this.JM.$cell.find('.commentCenterLike').show().css({
                     'top': -GM.ccm.config.earMoveDistance,
-                    'opacity': 1
+                    'opacity': 1,
                 });
             }
             ;
@@ -207,19 +210,6 @@
                 that.liked = !that.liked;
                 GM.ccm.start();
 
-                //ajax........................................................
-                if (!that.commentsPK) {//没有服务器主键说明不用ajax
-                    return;
-                }
-                ;
-
-                //给服务器发ajax点赞
-                //if (!GM.ccm.ajaxedObject.hasOwnProperty(that.commentsPK)) {//没有
-                //    GM.ccm.ajaxedObject[that.commentsPK] = 1;
-                //
-                //    controller.cullectSupport({commentId: that.commentsPK}, null);
-                //}
-                //;
             });
 
 
@@ -230,10 +220,51 @@
 
                 //记录被回复弹幕..................................
                 GM.beReplyedCommentCell = that;
-                console.log('===============' + GM.beReplyedCommentCell.commentIndex);
 
                 //jsBridge不使用本行..............................
-                GM.inputBox.C.find('input').focus();
+                if (GM.version == 'Android') {
+                    var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
+                    var retxt = GM.beReplyedCommentCell.txt;
+                    var reuid = GM.beReplyedCommentCell.uid;
+                    var recid = GM.beReplyedCommentCell.commentsPK;
+                    var json = {
+                        inputBoxFocus: {
+                            reid: reid,
+                            reuid: reuid,
+                            recid: recid,
+                            retxt: retxt,
+                        }
+                    };
+                    androidJsBridge.webToAndroid(JSON.stringify(json));
+                    ;
+                }
+                else if (GM.version == 'IOS') {
+                    setupWebViewJavascriptBridge(function (bridge) {
+                        //回复逻辑
+                        that.JM.$cell.find('.commentReply').click(function (e) {
+                            e.stopPropagation();
+                            GM.changeState('reply');
+
+                            GM.beReplyedCommentCell = that;
+                            var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
+                            var retxt = GM.beReplyedCommentCell.txt;
+                            var reuid = GM.beReplyedCommentCell.uid;
+                            var recid = GM.beReplyedCommentCell.commentsPK;
+                            bridge.callHandler('testObjcCallback', {
+                                inputBoxFocus: {
+                                    reid: reid,
+                                    reuid: reuid,
+                                    recid: recid,
+                                    retxt: retxt,
+                                }
+                            }, function (response) {
+                            })
+                        });
+                    })
+                }
+                else {
+                    GM.inputBox.C.find('input').focus();
+                }
 
             });
 
@@ -241,15 +272,17 @@
 
         move: function () {
             var that = this;
+            var $dom = that.getJqueryDom();
+            var cellLeft = parseFloat($dom.css('left'));
+            var cellWidth = parseFloat($dom.css('width'));
 
-            var cellLeft = that.cssCell('left');
-            var cellWidth = that.cssCell('width');
-            this.cssCell('left', (cellLeft - that.speed));
+
+            $dom.css('left', (cellLeft - that.speed));
 
             //一开始一定占据屏幕右侧 一旦开始不占据屏幕右侧就让occupied=false
             if (that.occupied) {
-                cellLeft = that.cssCell('left');
-                cellWidth = that.cssCell('width');
+                cellLeft = parseFloat($dom.css('left'));
+                cellWidth = parseFloat($dom.css('width'));
 
                 if ((cellLeft + cellWidth + 10) < $(w).width()) {
                     that.occupied = false;
@@ -259,7 +292,7 @@
             ;
 
             //如果移动出屏幕就停止
-            if (this.cssCell('left') < -cellWidth) {
+            if (parseFloat($dom.css('left')) < -cellWidth) {
                 that.die();
             }
             ;
@@ -274,16 +307,7 @@
             delete(that);
 
         },
-        cssCell: function (property, value) {
-            var that = this;
-            if (arguments.length == 1) {
-                return (parseFloat(that.jqueryMap.$cell.css(property))); //Math.floor就不会出现弹幕偶然卡住的情况了
-            }
-            else {
-                this.jqueryMap.$cell.css(property, value);
-            }
-            ;
-        },
+
         getJqueryDom: function () {
             var that = this;
             return that.JM.$cell;

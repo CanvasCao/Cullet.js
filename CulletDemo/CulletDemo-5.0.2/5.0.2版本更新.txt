@@ -1,0 +1,2 @@
+5.0.2 回复弹幕的时候 不止post 会话组 连当前这个人的uid也需要post
+JS bridge存在于commentCell的bindEvent里

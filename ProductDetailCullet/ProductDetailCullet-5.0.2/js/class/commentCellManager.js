@@ -1,28 +1,31 @@
 /*!
- * cullet Cao+Bullet, a JavaScriptPlugIn v5.0.0
+ * cullet Cao+Bullet, a JavaScriptPlugIn v5.0.2
  * http://www.jimi.la/
  *
  * Copyright 2016, CaoYuhao
  * All rights reserved.
- * Date: 2016-6-30 22:57:31
+ * Date: 2016-8-25 13:15:42
  */
 
-/*!
- 5.0.0 加入弹幕回复 点击弹幕 弹出窗口决定点赞或评论
- */
 
 ;
 (function (w, d, $, undefined) {
 
     //管理类与dom无关 容器只能加这里 写在弹幕类里有延迟
     function CommentCellManager(container, json) {
+
+        //记录AnimationFrame..........................
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        window.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.webkitCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame;
+
         this.C = this.container = (typeof container == 'string') ? $(container) : container;
-        this.json = json;
+
         this.closeable = json.closeable;
         this.pnameable = json.pnameable;
-        this.topBlank = json.topBlank;
-        this.bottomBlank = json.bottomBlank;
-        this.startDelay = json.startDelay;
+        this.topBlank = json.topBlank || 0;
+        this.bottomBlank = json.bottomBlank || 0;
+        this.startDelay = json.startDelay || 1;
+        this.pushALG = json.pushALG || 'stick'//默认黏连
 
         this.ccmH = $(this.C).height();//可能是半屏
         this.cellH = 20;
@@ -33,20 +36,20 @@
 
         this.serverCommentArr = [];//服务器的数据 json {"commentsPK":"708","uid":null,"txt":"好东东","expression":"2"},
         this.commentIndex = 0;//索引值
-        this.commentCellArr = [];//commentCell对象
+        this.commentCellArr = [];//commentCell对象 的数组
         this.commentLimit = 15;
 
-        //最后一行的行数为了之后的代码能连起来
-        this.lastLineNum=0;
+        //最后一行的行数为了之后的弹幕能连起来 记录一下最后的.................
+        this.lastLineNum = 0;
 
 
         //维护的弹幕是否点赞列表
         //cellid  liked ajaxed
         this.likedObject = {};
-        this.ajaxedObject = {};
+        this.ajaxedObject = {};//暂时用不到
 
 
-        //弹幕速度属性
+        //弹幕速度属性.............................
         this.speedHash = {
             slow: 1,
             normal: 2,
@@ -56,11 +59,11 @@
         this.speedKey = 'normal';
 
 
-        //定时器相关属性
-        this.moveState;
+        //定时器相关属性.............................
+        this.moveState = null;//标记位
         this.moveFPS = 100;
         this.moveTimer = null;
-        this.pushFPS = 2.2;
+        this.pushFPS = 3.2;
         this.pushTimer = null;
 
 
@@ -68,12 +71,12 @@
         this.pid = '';
         this.pname = '';
 
-        //配置文件.............................
+        //配置文件...............................
         this.config = {
             //两个像耳朵一样的东西上下移动的距离
             earMoveDistance: 16,
         }
-        //初始化...
+        //初始化.................................
         this.init();
 
     };
@@ -102,7 +105,7 @@
             $(this.C).find('.commentPname').css({
                 position: 'absolute',
                 height: 40,
-                width: $(window).width(),
+                width: $(w).width(),
                 left: 0,
                 top: 0,
                 'font-size': '12px',
@@ -114,11 +117,10 @@
             $(this.C).find('.commentClose').css({
                 position: 'absolute',
                 top: 0,
-                left: $(window).width() - 25,
+                left: $(w).width() - 25,
                 color: '#555',
                 'font-size': '25px',
                 'line-height': '40px',
-
             });
 
         },
@@ -135,9 +137,7 @@
         push: function () {
             var that = this;
 
-            //服务器的弹幕全部显示了 或者 显示数量超过limit值了........................
-
-            //+2是因为中间可能插了两条null
+            //服务器的弹幕全部显示了 或者 显示数量超过limit值了 这一次就不push........................
             if (that.commentCellArr.length >= that.serverCommentArr.length || that.commentCellArr.length > that.commentLimit) {
                 return;
             }
@@ -146,7 +146,7 @@
             //给json赋值 决定弹幕出现的行数 //随机行数
             var lineNum = GetLineNum();
 
-            //说明每一行都有弹幕了
+            //说明每一行都有弹幕了...................................
             if (lineNum == null) {
                 return;
             }
@@ -155,10 +155,8 @@
 
             var adaptedJson = that.serverCommentArr[that.commentIndex];
 
-            //如果是null 为了会话组间隔 当前发送轮空
+            //如果是null 为了会话组间隔 当前发送ifFake弹幕....................
             if (!adaptedJson) {
-                //that.commentIndex = (that.commentIndex + 1) >= that.serverCommentArr.length ? 0 : (that.commentIndex + 1);
-                //return;
                 adaptedJson = {
                     txt: 'fake',
                     ifFake: true,
@@ -172,10 +170,10 @@
             that.commentCellArr.push(new CommentCell(that.C, adaptedJson));
 
             //push以后记录一下最后一行的行数..............................
-            that.lastLineNum=adaptedJson.lineNum;
+            that.lastLineNum = adaptedJson.lineNum;
 
 
-            //下标验收
+            //下标验收...................................................
             that.commentIndex = (that.commentIndex + 1) >= that.serverCommentArr.length ? 0 : (that.commentIndex + 1);
 
 
@@ -186,34 +184,57 @@
                 return (lineIndex * (that.cellH + that.cellPaddingTop) + that.cellPaddingTop);
             };
             function GetLineNum() {
-                that.lineResArr = [];
-                for (i = 0 + that.topBlank; i < that.lineNumber - that.bottomBlank; i++) { //第一行和最后一行不能有弹幕
-                    that.lineResArr.push(i);
-                }
-                ;
+                if (that.pushALG == 'stick') {
 
-
-                if (that.commentCellArr.length) {
-                    for (i = 0; i < that.commentCellArr.length; i++) {
-                        if (that.commentCellArr[i].occupied) {
-                            that.lineResArr = _.without(that.lineResArr, that.commentCellArr[i].lineNum);
-                        }
+                    that.lineResArr = [];
+                    for (i = 0 + that.topBlank; i < that.lineNumber - that.bottomBlank; i++) {
+                        that.lineResArr.push(i);
                     }
+                    ;
 
-                    //上一步计算出了所有的没有occupy的行数 现在我去并上上一条的+-1的行数 计算出最后可以随机的行数
-                    that.lineResArr=_.intersection(that.lineResArr,[that.lastLineNum-1,that.lastLineNum,that.lastLineNum+1]);
+                    if (that.commentCellArr.length) {
+                        for (i = 0; i < that.commentCellArr.length; i++) {
+                            if (that.commentCellArr[i].occupied) {
+                                that.lineResArr = _.without(that.lineResArr, that.commentCellArr[i].lineNum);
+                            }
+                        }
+                        //上一步计算出了所有的没有occupy的行数 现在我去并上上一条的+-1的行数 计算出最后可以随机的行数
+                        that.lineResArr = _.intersection(that.lineResArr, [that.lastLineNum - 1, that.lastLineNum, that.lastLineNum + 1]);
+                    }
+                    ;
+
+                    //lineResArr里面存了哪几行可以插弹幕
+                    if (that.lineResArr.length) {
+                        return that.lineResArr[GetRandom(0, that.lineResArr.length)];
+                    }
+                    else {
+                        return null;
+                    }
+                    ;
+                } else if (that.pushALG == 'top-down') {
+                    that.lineResArr = [];
+                    for (i = 0 + that.topBlank; i < that.lineNumber - that.bottomBlank; i++) {
+                        that.lineResArr.push(i);
+                    }
+                    ;
+                    [].forEach.call(that.commentCellArr, function (e, i, arr) {
+                        var occupied = e.occupied;
+                        if (occupied) {
+                            that.lineResArr = _.without(that.lineResArr, e.lineNum);
+                        }
+                    });
+                    //lineResArr里面存了哪几行可以插弹幕
+                    if (that.lineResArr.length) {
+                        return that.lineResArr[0];
+                    }
+                    else {
+                        return null;
+                    }
+                    ;
+
                 }
-                ;
 
 
-                //lineResArr里面存了哪几行可以插弹幕
-                if (that.lineResArr.length) {
-                    return that.lineResArr[GetRandom(0, that.lineResArr.length)];
-                }
-                else {
-                    return null;
-                }
-                ;
             };
         },
         move: function () {//所有弹幕动一下
@@ -233,6 +254,7 @@
             //开始的附加动作
             //所有选项图片隐藏 当前容器显示..................
             that.imgsDown($(that.C).find('.commentCon').find('.commentLike,.commentReply'));
+
             $(that.C).fadeIn();
 
 
@@ -240,7 +262,6 @@
                 console.log('Timer already exists');
                 return;
             } else {
-                window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
                 var moveStartTime = new Date().getTime();
 
@@ -282,13 +303,14 @@
             var that = this;
             that.moveState = false;
 
-            window.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.webkitCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame;
             cancelAnimationFrame(that.moveTimer);
             delete(that.moveTimer);//删除定时器id
             cancelAnimationFrame(that.pushTimer);
             delete(that.pushTimer);
 
         },
+
+        //只在控制台调用..........................................................
         changeSpeed: function (speedKey) {
             var that = this;
 
@@ -308,7 +330,7 @@
             that.serverCommentArr.splice(that.commentIndex, 0, json);
         },
 
-        //回复弹幕.................................................................
+        //回复弹幕方法.................................................................
         reply: function (adaptedJson) {
             var that = this;
 
@@ -350,6 +372,8 @@
             var that = this;
             $(that.C).find('.commentPname').html(pname);
         },
+
+        //点击弹幕的时候 左右两个耳朵上下移动的方法
         imgsUp: function ($dom) {
             var that = this;
             $dom.css({'top': 0, 'display': 'block', 'opacity': 0}).stop().animate({
