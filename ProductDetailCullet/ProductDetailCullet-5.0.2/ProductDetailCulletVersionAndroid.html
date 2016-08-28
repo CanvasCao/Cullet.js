@@ -49,7 +49,7 @@
                     topBlank: 0,
                     bottomBlank: 1,
                     startDelay: 0,
-                    pushALG:'top-down',
+                    pushALG: 'top-down',
                 }
         );
         GM.ccm.load(searchJson.pid); //加载弹幕
@@ -62,9 +62,14 @@
         }, false)
 
 
-        GM.version='Android';
-        //JS bridge............................................................................
-        function callJS() {
+        GM.version = 'Android';
+
+    })
+</script>
+<script>
+    //JS bridge...........................................................
+    function callJS() {
+
             var data = JSON.parse(androidJsBridge.androidToWeb());
             if (data.ccmStart) {
                 GM.ccm.start();
@@ -82,9 +87,7 @@
                 GM.ccm.start();
                 GM.changeState('add');
             }
-        }
-
-    })
+    }
 </script>
 </body>
 </html>
