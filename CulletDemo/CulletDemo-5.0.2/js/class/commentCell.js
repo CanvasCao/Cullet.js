@@ -12,6 +12,8 @@
         this.json = json;
 
         this.txt = (json.txt.length > 18) ? json.txt.substr(0, 18) + '..' : json.txt;
+        //this.txt = '这款宝贝,真不知道该如何评价! 刚开始使用时,失望到极致~推不匀,有浮粉现象.遮瑕几乎没有,脸上的斑点依然狰狞!令我非常之抓狂! 好不容易上完妆,郁闷的出门.半小时后的聚会,女友居然夸容光焕发,气色好!暗爽之余跑到盥洗室一瞧,嘿!果然光彩照人!果然娇家的粉底和粉球都一个德性，蕴含贝母类,利用光线折射,提升肌肤光泽度,令妆感自然并且长效不掉妆。';
+
         this.lineNum = json.lineNum;//不能不给
         this.top = json.top; //出身位置一定是top随机 left 100%（就是屏幕右端）
         this.speed = json.speed;

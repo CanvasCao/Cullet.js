@@ -62,7 +62,6 @@
 
 <script src="http://apps.bdimg.com/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="http://apps.bdimg.com/libs/underscore.js/1.7.0/underscore-min.js"></script>
-
 <script src='js/controller/controller.js'></script>
 <script src='js/globalManager/globalManager.js'></script>
 <script src='js/searchToJson/searchToJson.js'></script>
@@ -73,6 +72,8 @@
 <script src='js/class/jimiInputBoxCullet.js'></script>
 <script src='js/tool/fastclick.js'></script>
 <script src='js/tool/Fns.js'></script>
+<script src='js/tool/velocity.min.js'></script>
+<script src='js/tool/velocity.ui.js'></script>
 
 <script>
     $(function () {
@@ -101,7 +102,7 @@
                 }
         );
 
-        //加载弹幕.....................
+        //加载弹幕...................................................
         GM.ccm.load(searchJson.pid);
 
         //inputBox..................................................

@@ -1,0 +1,2 @@
+引入velocity
+弹幕移动从改变left值到改变transform的translateX属性来变化
