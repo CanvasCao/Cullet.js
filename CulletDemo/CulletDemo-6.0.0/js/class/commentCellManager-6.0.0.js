@@ -1,5 +1,5 @@
 /*!
- * cullet Cao+Bullet, a JavaScriptPlugIn v5.0.2
+ * cullet Cao+Bullet, a JavaScriptPlugIn v6.0.0
  * http://www.jimi.la/
  *
  * Copyright 2016, CaoYuhao
@@ -61,9 +61,9 @@
 
         //定时器相关属性.............................
         this.moveState = null;//标记位
-        this.moveFPS = 100;
+        this.moveFPS = 80;
         this.moveTimer = null;
-        this.pushFPS = 3.2;
+        this.pushFPS = 2.8;
         this.pushTimer = null;
 
 
@@ -158,7 +158,7 @@
             //如果是null 为了会话组间隔 当前发送ifFake弹幕....................
             if (!adaptedJson) {
                 adaptedJson = {
-                    txt: 'fake',
+                    txt: '',
                     ifFake: true,
                 };
             }

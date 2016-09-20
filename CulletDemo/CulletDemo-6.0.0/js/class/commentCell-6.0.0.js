@@ -3,8 +3,6 @@
  */
 ;
 (function (w, d, $, undefined) {
-
-//弹幕CommentCell与dom有关 因为dom是他的表现层
     function CommentCell(container, json) {
         var that = this;
 
@@ -14,10 +12,10 @@
 
         //假的就塞一个不透明的进去..................................
         this.ifFake = json.ifFake;
-        //this.txt = (json.txt.length > 18) ? json.txt.substr(0, 18) + '..' : json.txt;
-        this.txt =this.ifFake ?" ":'这款宝贝,真不知道该如何评价! 刚开始使用时,失望到极致~推不匀,有浮粉现象.遮瑕几乎没有,脸上的斑点依然狰狞!令我非常之抓狂! 好不容易上完妆,郁闷的出门.半小时后的聚会,女友居然夸容光焕发,气色好!暗爽之余跑到盥洗室一瞧,嘿!果然光彩照人!果然娇家的粉底和粉球都一个德性，蕴含贝母类,利用光线折射,提升肌肤光泽度,令妆感自然并且长效不掉妆。';
+        this.txt = (json.txt.length > 40) ? json.txt.substr(0, 40) + '..' : json.txt;
+        //this.txt =this.ifFake ?" ":'这款宝贝,真不知道该如何评价! 刚开始使用时,失望到极致~推不匀,有浮粉现象.遮瑕几乎没有,脸上的斑点依然狰狞!令我非常之抓狂! 好不容易上完妆,郁闷的出门.半小时后的聚会,女友居然夸容光焕发,气色好!暗爽之余跑到盥洗室一瞧,嘿!果然光彩照人!果然娇家的粉底和粉球都一个德性，蕴含贝母类,利用光线折射,提升肌肤光泽度,令妆感自然并且长效不掉妆。';
 
-        this.lineNum = json.lineNum;//不能不给
+        this.lineNum = json.lineNum;
         this.top = json.top; //出身位置一定是top随机 left 100%（就是屏幕右端）
         this.translateX = 0; //一开始translateX是0 移动到负windowW+cellW的时候 执行die函数
         this.cellWidth = null;
@@ -26,9 +24,9 @@
         this.commentIndex = json.commentIndex;//索引
 
         this.imgUrl = json.imgUrl;
-        this.id = new Date().getTime().toString() + parseInt(Math.random() * 10000);//时间戳+随机数
+        this.id = new Date().getTime().toString();
         this.commentsPK = json.commentsPK; //数据库comments表的主键
-        this.reid = json.reid;
+        this.reid = json.reid;//会话id
         this.uid = json.uid;
 
         this.userType = json.userType || 0;//普通是0 女王是12 10是机密小秘书
@@ -41,10 +39,9 @@
         }
 
 
-
         this.JM = this.jqueryMap = {};
 
-        //配置文件................................................
+        //配置文件...........................................
         this.config = {};
 
         this.init();
@@ -97,7 +94,6 @@
         },
         initCSS: function () {
             var that = this;
-
 
             //设置当前弹幕本身的css
             this.JM.$cell.css({left: $(w).width()});
