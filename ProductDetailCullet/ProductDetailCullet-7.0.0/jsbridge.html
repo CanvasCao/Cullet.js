@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+
+    <title></title>
+</head>
+<body>
+<div></div>
+<button>CLICK</button>
+<script>
+
+    function callJS(){
+
+        var result = JSON.parse(androidJsBridge.androidToWeb());
+
+        var div = document.getElementById('div');
+        div.innerHTML = result;
+    }
+
+
+    var btn = document.getElementsByTagName('button')[0];
+    btn.onclick=function(){
+
+        androidJsBridge.webToAndroid("hghkkk");
+    }
+
+</script>
+</body>
+</html>

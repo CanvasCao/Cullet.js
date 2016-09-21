@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <title>产品弹幕</title>
+    <link rel="stylesheet" href="css/productDetailCullet.css"/>
+</head>
+<body>
+<div id="cullet">
+    <div class='jimiInputBox'></div>
+</div>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/underscore.js/1.7.0/underscore-min.js"></script>
+
+<script src='js/jsBridge/jsBridgeVersionIOS.js'></script>
+<script src='js/controller/controller.js'></script>
+<script src='js/globalManager/globalManager.js'></script>
+<script>   GM.version = 'IOS';</script>
+<script src='js/searchToJson/searchToJson.js'></script>
+<script src='js/constant/jimiHost.js'></script>
+
+<script src='js/class/commentCell-7.0.0.js'></script>
+<script src='js/class/commentCellManager-7.0.0.js'></script>
+<script src='js/class/jimiInputBoxCullet.js'></script>
+<script src='js/tool/fastclick.js'></script>
+<script src='js/tool/Fns.js'></script>
+<script src='js/tool/velocity.min.js'></script>
+<script src='js/tool/velocity.ui.js'></script>
+
+<script>
+    $(function () {
+        if (!window.location.search) {
+//            5682a0aeefb80c4e26c4a8f5&uid=10059
+
+//            window.location = window.location + '?pid=5682a0aeefb80c4e26c4a8f5&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg&jsonpcallback=1'
+            window.location = window.location + '?pid=56f57a02efb80c57428c7451&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg';
+        }
+        window.searchJson = searchJson = window.location.search.searchToJson();
+
+
+        //FastClick.....................................................
+        FastClick.attach(document.body);
+
+        GM.ifShare = false;
+        //弹幕............................................................
+        GM.ccm = GM.commentCellManager = new CommentCellManager('#cullet',
+                {
+                    serverUrl: jimiHost + '/culletSelect.php',
+                    closeable: false,
+                    pnameable: false,
+                    topBlank: 0,
+                    bottomBlank: 1,
+                    startDelay: 0,
+                    pushALG: 'top-down',
+                }
+        );
+        GM.ccm.load(searchJson.pid); //加载弹幕
+//      GM.ib =GM.inputBox= new JimiInputBox('.jimiInputBox');
+
+
+        //弹幕显示的时候阻止背景的移动........................................
+        $('#cullet')[0].addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, false)
+
+        setupWebViewJavascriptBridge(function (bridge) {
+            //IOSToWeb.............................................................
+            bridge.registerHandler('testJavascriptHandler', function (data, responseCallback) {
+
+                if (data.ccmStart) {
+                    GM.ccm.start();
+                }
+                else if (data.ccmPause) {
+                    GM.ccm.pause();
+                }
+                else if (data.ccmAdd) {
+                    var json = data.ccmAdd;
+                    GM.ccm.add(json);
+                    GM.changeState('add');
+                } else if (data.ccmReply) {
+                    var json = data.ccmReply;
+                    GM.ccm.reply(json);
+                    GM.ccm.start();
+                    GM.changeState('add');
+                }
+                var responseData = {'CaoYuhao Says': 'Right back Bitch!!!'};
+                responseCallback(responseData);
+            })
+        })
+
+    })
+</script>
+</body>
+</html>
