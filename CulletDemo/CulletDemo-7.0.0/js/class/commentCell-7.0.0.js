@@ -74,7 +74,7 @@
             //不等于0 就是 表情 否则1 2 //10 就是肌秘小秘书
             that.config.commentImg = (that.userType != 0) ? '<img class="commentImg" src="' + that.imgUrl + '" />' : '<img class="commentImg" src="img/expression/' + that.expression + '.png" />';
 
-            //vip的背景只有1 2有
+            //vip的背景只有1 2有.................................
             that.config.vipBg = (that.userType == 1 || that.userType == 2) ? '<img class="commentVipBg" src="img/vip' + that.userType + '.png" />' : '';
             if (that.userType == 0) {
                 that.config.normalColor = 'rgba(0,0,0,0.45)';
@@ -114,10 +114,10 @@
                 'font-size': '16px',
                 'padding': '4px 22px',
                 'border-radius': '30px',
-                //'border': '1px solid white',
                 'background-color': that.config.normalColor,
                 //opacity: 1,
                 'white-space': 'nowrap',
+                'z-index': that.lineNum,
             });
 
 
@@ -183,22 +183,7 @@
         },
         bindEvent: function () {
             var that = this;
-
-            //初次点击 出现 喜欢和回复的选项图片.......................................
-            //ccm的是否在移动state改变...............................................
-            this.JM.$cell.click(function (e) {
-                GM.changeState('add');
-
-                if (GM.ccm.moveState) {
-                    GM.beChoosedComment = that;
-                    GM.clickPosition = {x: e.clientX, y: e.clientY};
-                    GM.ccm.pause();
-                } else {
-                    GM.ccm.start();
-                    GM.beChoosedComment = null;
-                }
-            });
-
+            //所有绑定的事件通过事件委托放在了ccm的bindCommentCellDelegate中
         },
 
         move: function () {

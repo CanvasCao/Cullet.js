@@ -11,5 +11,11 @@ function twoDmsToOneDms(twoDmsArr) {
         }
 
     })
-    return resArr;
+
+    //说明一条都没有
+    if(resArr.length<=1){
+        return [];
+    }else{
+        return resArr;
+    }
 }

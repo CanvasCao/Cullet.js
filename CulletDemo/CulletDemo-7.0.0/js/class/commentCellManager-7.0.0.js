@@ -85,10 +85,12 @@
 
     CommentCellManager.prototype = {
         init: function () {
-            this.createDomAndInitCss();
+            this.createContainerAndInitCss();
+            this.createMenuAndInitCss();
             this.bindEvent();
+            this.bindCommentCellDelegate();
         },
-        createDomAndInitCss: function () {
+        createContainerAndInitCss: function () {
             //增加弹幕容器............................................................
             var pnameStr = this.pnameable ? "<div class='commentPname'></div>" : '';
             var closeStr = this.closeable ? "<div class='commentClose'>×</div>" : '';
@@ -124,8 +126,8 @@
                 'font-size': '25px',
                 'line-height': '40px',
             });
-
-
+        },
+        createMenuAndInitCss: function () {
             //全局的点击回复 点赞.................................
             $(this.C).append('<div id="commentMenu"><img class="commentLike" src="img/like.png"/>' +
                 '<img class="commentReply" src="img/reply.png"/></div>');
@@ -137,6 +139,7 @@
                 left: '50%',
                 display: 'none',
                 'white-space': 'nowrap',
+                'z-index': 999,
             });
             $(this.C).find('.commentLike,.commentReply').css({
                 'border-radius': '50%',
@@ -148,7 +151,6 @@
 
             });
         },
-
         bindEvent: function () {
             var that = this;
 
@@ -165,7 +167,7 @@
                 //恢复回复弹幕到添加弹幕的状态........................
                 GM.changeState('add');
 
-                var bchc=GM.beChoosedComment;
+                var bchc = GM.beChoosedComment;
                 if (bchc.liked) {
                     GM.ccm.likedObject[bchc.commentsPK] = 0;
                     bchc.support('down');
@@ -180,16 +182,34 @@
 
 
             ////回复逻辑..........................................................
-            //this.JM.$cell.find('.commentReply').click(function (e) {
-            //    e.stopPropagation();
-            //    GM.changeState('reply');
-            //
-            //    //记录被回复弹幕..................................
-            //    GM.beReplyedCommentCell = that;
-            //    //jsBridge不使用本行..............................
-            //    GM.inputBox.C.find('input').focus();
-            //
-            //});
+            $(this.C).find('.commentReply').click(function (e) {
+                e.stopPropagation();
+                GM.changeState('reply');
+
+                //jsBridge不使用本行..............................
+                GM.inputBox.C.find('input').focus();
+
+            });
+        },
+        bindCommentCellDelegate: function () {
+            var that = this;
+            $(document).click(function (e) {
+                var target = e.target;
+                var $comment = $(target).closest(".comment")
+                if ($comment.length > 0) {
+                    GM.changeState('add');
+                    if (GM.ccm.moveState) {
+                        GM.$beChoosedComment = $comment;
+                        GM.beChoosedComment = that._GetObjCellFromJqCell($comment);
+                        GM.clickPosition = {x: e.clientX, y: e.clientY};
+                        GM.ccm.pause();
+                    } else {
+                        GM.ccm.start();
+                        GM.$beChoosedComment = null;
+                        GM.beChoosedComment = null;
+                    }
+                }
+            })
         },
         push: function () {
             var that = this;
@@ -240,11 +260,13 @@
 
         _GetRandom: function (begin, end) {
             return Math.floor(Math.random() * (end - begin)) + begin;
-        },
+        }
+        ,
         _GetTop: function (lineIndex) { //静态方法 根据行号返回top值
             var that = this;
             return (lineIndex * (that.cellH + that.cellPaddingTop) + that.cellPaddingTop);
-        },
+        }
+        ,
         _GetLineNum: function () {
             var that = this;
             that.allLineNumArr = [];
@@ -270,13 +292,15 @@
                 var res = (that.allLineNumArr.length) ? that.allLineNumArr[0] : null;
                 return res;
             }
-        },
+        }
+        ,
         move: function () {//所有弹幕动一下
             var that = this;
             [].forEach.call(that.commentCellArr, function (e, i, arr) {
                 if (e)e.move();
             });
-        },
+        }
+        ,
 
 
         //start 就是一边move一边push
@@ -329,7 +353,8 @@
             }
             ;
 
-        },
+        }
+        ,
         pause: function () {//关闭定时器
             var that = this;
             that.moveState = false;
@@ -342,7 +367,8 @@
             cancelAnimationFrame(that.pushTimer);
             delete(that.pushTimer);
 
-        },
+        }
+        ,
 
         //只在控制台调用..........................................................
         changeSpeed: function (speedKey) {
@@ -355,36 +381,41 @@
                     e.speed = that.speedHash[that.speedKey];
             });
 
-        },
+        }
+        ,
 
         //add只在serverCommentArr下一条 插入一条数据 定时器的push方法会自动插入这一条.................
         add: function (json) {
             var that = this;
             //在弹幕数组中间插入....................................................
             that.serverCommentArr.splice(that.commentIndex, 0, json);
-        },
+        }
+        ,
 
         //回复弹幕方法.................................................................
         reply: function (adaptedJson) {
             var that = this;
 
-            var $replyedDom = GM.beReplyedCommentCell.getJqueryDom();
-            var replyedLeft = parseInt($replyedDom.css('left'));
-            var replyedWidth = parseInt($replyedDom.css('width'));
+            var replyedtTranslateX = GM.beChoosedComment.translateX;
 
-            adaptedJson.top = GM.beReplyedCommentCell.top;
-            adaptedJson.lineNum = GM.beReplyedCommentCell.lineNum;
-            adaptedJson.speed = GM.beReplyedCommentCell.speed;
-            //adaptedJson.commentIndex = GM.beReplyedCommentCell.commentIndex;//? 不写也行的
+            var replyedWidth = parseInt(GM.$beChoosedComment.css('width'));
+
+            adaptedJson.top = GM.beChoosedComment.top;
+            adaptedJson.lineNum = GM.beChoosedComment.lineNum;
+            adaptedJson.speed = GM.beChoosedComment.speed;
+            ////adaptedJson.commentIndex = GM.beChoosedComment.commentIndex;//? 不写也行的
             var newCommentCell = new CommentCell(that.C, adaptedJson);
             var $dom = newCommentCell.getJqueryDom();
-            $dom.css({left: 2 * $(w).width()}).animate({left: replyedLeft + replyedWidth - 40}, 'normal', 'linear', function () {
-                that.commentCellArr.push(newCommentCell);
-                console.log("============" + GM.beReplyedCommentCell.commentIndex);
-                that.serverCommentArr.splice(GM.beReplyedCommentCell.commentIndex + 1, 0, adaptedJson);
-            });
+            $dom.velocity({translateX: 0}, 0).velocity({translateX: replyedtTranslateX + replyedWidth - 30}, 'fast', 'linear', function () {
 
-        },
+                GM.changeState('add');
+                newCommentCell.translateX = replyedtTranslateX + replyedWidth - 30;
+                that.commentCellArr.push(newCommentCell);
+                //console.log("============" + GM.beChoosedComment.commentIndex);
+                that.serverCommentArr.splice(GM.beChoosedComment.commentIndex + 1, 0, adaptedJson);
+            });
+        }
+        ,
 
         load: function (pid) { //传入php问号后面的查询参数
             var that = this;
@@ -393,7 +424,8 @@
                 return; //加载过了
             }
             controller.culletSelect(pid);
-        },
+        }
+        ,
         clear: function () {
             var that = this;
             that.commentCellArr = [];
@@ -401,11 +433,13 @@
             $(that.C).find('.commentCon').html('');
             that.commentIndex = 0;
             that.pause();
-        },
+        }
+        ,
         changePname: function (pname) {
             var that = this;
             $(that.C).find('.commentPname').html(pname);
-        },
+        }
+        ,
 
         menuShow: function () {
             var that = this;
@@ -430,7 +464,8 @@
                     top: that._GetTop(GM.beChoosedComment.lineNum) - that.config.earMoveDistance,
                     opacity: 1,
                 }, 100, 'swing');
-        },
+        }
+        ,
         menuHide: function () {
             var that = this;
             if (!GM.beChoosedComment) {
@@ -444,7 +479,21 @@
                 }, 100, 'swing', function () {
                     $(this.C).find('#commentMenu').hide();
                 })
-        },
+        }
+        ,
+        _GetObjCellFromJqCell: function ($dom) {
+            var that = this;
+
+            var id = $dom[0].id;
+
+            for (i = 0; i < that.commentCellArr.length; i++) {
+                if ('cell' + that.commentCellArr[i].id == id) {
+                    return that.commentCellArr[i];
+                }
+            }
+            ;
+
+        }
     };
     w.CommentCellManager = CommentCellManager;
 })

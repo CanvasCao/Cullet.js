@@ -155,9 +155,9 @@
                     //如果是回复..........................................................
                     if (GM.state == 'reply') {
                         //reid 回话组id  recid被回复弹幕主键 reuid被回复用户id
-                        var reid = (GM.beReplyedCommentCell.reid == 0) ? GM.beReplyedCommentCell.commentsPK : GM.beReplyedCommentCell.reid;
-                        var recid = GM.beReplyedCommentCell.commentsPK;
-                        var reuid = GM.beReplyedCommentCell.uid;
+                        var reid = (GM.beChoosedComment.reid == 0) ? GM.beChoosedComment.commentsPK : GM.beChoosedComment.reid;
+                        var recid = GM.beChoosedComment.commentsPK;
+                        var reuid = GM.beChoosedComment.uid;
 
                         controller.culletInsert({
                             pid: searchJson.pid,
@@ -167,7 +167,7 @@
                             reid: reid,
                             recid: recid,
                             reuid: reuid,
-                            jsonpcallback: searchJson.jsonpcallback,
+                            jsonpcallback: 1,
                         }, function (data) {
                             var commentsPK = data.cid;
                             var json = {
@@ -199,7 +199,7 @@
                             reid: reid,
                             recid: recid,
                             reuid: reuid,
-                            jsonpcallback: searchJson.jsonpcallback,
+                            jsonpcallback:1,
                         }, function (data) {
                             var commentsPK = data.cid;
                             var json = {

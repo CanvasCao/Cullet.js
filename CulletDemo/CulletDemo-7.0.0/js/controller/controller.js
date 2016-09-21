@@ -25,7 +25,7 @@
 
                 //data.data是二维数组我需要把它转成1维
                 GM.ccm.serverCommentArr = twoDmsToOneDms(data.data);
-
+                console.log(GM.ccm.serverCommentArr);
                 setTimeout(function () {
                     GM.ccm.start(); //加载完成以后开始播放
                 }, GM.ccm.startDelay);
@@ -37,28 +37,10 @@
         });
     };
 
-    controller.cullectSupport = function (data, callback) {
-        $.ajax({
-            type: "get",
-            url: jimiHost + '/culletSupport.php',
-            data: data,
-            dataType: "jsonp",
-            jsonp: "callback",
-            jsonpCallback: "jsonpcallback",
-            success: function (data) {
-                //console.log('SUCCESS!');
-                //console.log(JSON.stringify(data));
-            },
-            error: function (err) {
-                //console.log('ERROR!');
-                //console.log(err);
-            }
-        });
-    };
 
     controller.culletInsert = function (data, callback) {
 
-        //console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data))
         $.ajax({
             type: "post",
             url: jimiHost + '/culletInsert.php',
