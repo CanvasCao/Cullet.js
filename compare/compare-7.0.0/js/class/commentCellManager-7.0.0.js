@@ -124,7 +124,7 @@
             $(this.C).find('.commentClose').css({
                 position: 'absolute',
                 top: 0,
-                right:15,
+                right: 15,
                 color: '#555',
                 'font-size': '25px',
                 'line-height': '40px',
@@ -184,15 +184,65 @@
             });
 
 
+            console.log(GM.version);
             ////回复逻辑..........................................................
-            $(this.C).find('.commentReply').click(function (e) {
-                e.stopPropagation();
-                GM.changeState('reply');
+            if (GM.version == 'Android') {
+                $(that.C).find('.commentReply').click(function (e) {
+                    e.stopPropagation();
+                    GM.changeState('reply');
 
-                //jsBridge不使用本行..............................
-                GM.inputBox.C.find('input').focus();
+                    var reid = (GM.beChoosedComment.reid == 0) ? GM.beChoosedComment.commentsPK : GM.beChoosedComment.reid;
+                    var retxt = GM.beChoosedComment.txt;
+                    var reuid = GM.beChoosedComment.uid;
+                    var recid = GM.beChoosedComment.commentsPK;
+                    var json = {
+                        inputBoxFocus: {
+                            reid: reid,
+                            reuid: reuid,
+                            recid: recid,
+                            retxt: retxt,
+                        }
+                    };
+                    androidJsBridge.webToAndroid(JSON.stringify(json));
+                    ;
+                })
 
-            });
+            }
+            else if (GM.version == 'IOS') {
+                setupWebViewJavascriptBridge(function (bridge) {
+                    //回复逻辑
+                    $(that.C).find('.commentReply').click(function (e) {
+                        e.stopPropagation();
+                        GM.changeState('reply');
+                        var reid = (GM.beChoosedComment.reid == 0) ? GM.beChoosedComment.commentsPK : GM.beChoosedComment.reid;
+                        var retxt = GM.beChoosedComment.txt;
+                        var reuid = GM.beChoosedComment.uid;
+                        var recid = GM.beChoosedComment.commentsPK;
+                        bridge.callHandler('testObjcCallback', {
+                            inputBoxFocus: {
+                                reid: reid,
+                                reuid: reuid,
+                                recid: recid,
+                                retxt: retxt,
+                            }
+                        }, function (response) {
+                        })
+                    })
+                })
+
+            }
+
+
+            else if (GM.version == 'web') {
+                $(that.C).find('.commentReply').click(function (e) {
+                    e.stopPropagation();
+                    GM.changeState('reply');
+                    GM.inputBox.C.find('input').focus();
+
+                })
+            }
+
+
         },
         bindCommentCellDelegate: function () {
             var that = this;
@@ -314,6 +364,7 @@
 
             that.menuHide();
 
+            GM.changeState('add');
             $(that.C).fadeIn();
 
             if (that.moveTimer) {
@@ -434,7 +485,6 @@
             that.commentCellArr = [];
             that.serverCommentArr = [];
             that.occupiedLineArr = [];
-
             $(that.C).find('.commentCon').html('');
             that.commentIndex = 0;
             that.pause();

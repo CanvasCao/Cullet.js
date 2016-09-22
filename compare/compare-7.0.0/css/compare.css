@@ -3,7 +3,7 @@
     margin: 0;
     text-decoration: none;
     list-style: none;
-    font-family: 'Î¢ÈíÑÅºÚ';
+    font-family: 'å¾®è½¯é›…é»‘';
     font-size: 12px;
     /**/
     -webkit-touch-callout: none;
@@ -14,6 +14,8 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    -webkit-overflow-scrolling: touch;
 }
 
 input, button, select, textarea {
@@ -38,12 +40,12 @@ td {
     padding: 10px;
     box-sizing: border-box;
     color: #666;
-    /*ÕâÀïµÄ50¾ÓÈ»ÊÇ×îĞ¡¸ß¶ÈµÄÒâË¼ ¾ªÁË*/
+    /*è¿™é‡Œçš„50å±…ç„¶æ˜¯æœ€å°é«˜åº¦çš„æ„æ€ æƒŠäº†*/
     height: 50px;
     border-left: 1px solid #d2d2d2;
     border-top: 1px solid #d2d2d2;
 
-    /*°¡Ó´ÎÒ²Ù Ö»ÊÇÒòÎª·½»ÔÒªÔÚÀïÃæ¼Óa±êÇ©*/
+    /*å•Šå“Ÿæˆ‘æ“ åªæ˜¯å› ä¸ºæ–¹è¾‰è¦åœ¨é‡Œé¢åŠ aæ ‡ç­¾*/
     position: relative;
 
 }
@@ -128,7 +130,7 @@ td {
     line-height: 28px;
 }
 
-/*»ù±¾²ÎÊıÄÇÒ»ĞĞ*/
+/*åŸºæœ¬å‚æ•°é‚£ä¸€è¡Œ*/
 #line2 {
     position: absolute;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.4);
@@ -140,11 +142,11 @@ td {
     text-align: center;
     /*box-sizing: border-box;*/
     /*border: 10px solid red;*/
-    /*¸ß¶ÈÊÇµÚ¶şĞĞµÄ¸ß¶È*/
-    /*topÊÇµÚÒ»ĞĞµÄ¸ß¶È*/
+    /*é«˜åº¦æ˜¯ç¬¬äºŒè¡Œçš„é«˜åº¦*/
+    /*topæ˜¯ç¬¬ä¸€è¡Œçš„é«˜åº¦*/
 }
 
-/*µ¯Ä»ÄÇÒ»ĞĞµÄdivµÄÑùÊ½*/
+/*å¼¹å¹•é‚£ä¸€è¡Œçš„divçš„æ ·å¼*/
 .openCullet {
     border: 1px solid #3982e1;
     border-radius: 20px;

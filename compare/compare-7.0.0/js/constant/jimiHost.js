@@ -1,1 +1,1 @@
-window.jimiHost='http://n1.jimi.la/apps_V9.2';
+window.jimiHost='http://n1.jimi.la/apps_T1';

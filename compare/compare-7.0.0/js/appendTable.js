@@ -196,7 +196,6 @@ function appendTable() {
                 var curScrollTop = $(this).scrollTop();
                 var curScrollLeft = $(this).scrollLeft();
 
-
                 JM.$fakeLdiv.scrollTop(curScrollTop);
                 JM.$fakeTdiv.scrollLeft(curScrollLeft);
 
@@ -216,54 +215,48 @@ function appendTable() {
             })
 
 
-            //点击变换shadow....................................................................
-            JM.$fakeL.find('td').click(function () {
-                var index = $(this).parent().index()
-                if (index >= 3) {
-                    ChangeShadow(index);
-                }
+            //bindClickEvent..................................................................
+            $(document).click(function (e) {
+                var target = e.target;
+                var $target = $(target);
 
+                //如果是td 换颜色
+                if($target.is('td')){
+                    var index = $target.parent().index();
+                    if (index >= 3) {
+                        ChangeShadow(index);
+                        function ChangeShadow(index) {
+                            if (JM.$fakeL.find('td').eq(index).attr('data') == 'unclicked') {
+                                JM.$fakeL.find('td').eq(index).css({
+                                    'box-shadow': 'inset 0px 5px 10px rgba(113,187,230,0.3)',
+                                    'background-color': '#e7f4ff',
+                                    'color': '#3982e1'
+                                });
+                                JM.$realdiv.find('tr').eq(index).find('td').css({
+                                    'background-color': '#e7f4ff'
+                                });
+
+                                JM.$fakeL.find('td').eq(index).attr('data', 'clicked');
+                            }
+                            else {
+                                JM.$fakeL.find('td').eq(index).css({
+                                    'box-shadow': 'inset -10px 0px 10px rgba(0, 0, 0, 0.1)',
+                                    'backgroundColor': 'white',
+                                    'color': '#666',
+                                });
+                                JM.$fakeL.find('td').eq(index).attr('data', 'unclicked');
+                                JM.$realdiv.find('tr').eq(index).find('td').css({
+                                    'background-color': 'white'
+                                })
+                            }
+                        }
+                    }
+                }
+                //火箭点击上升...........................................................
+                else if($target.closest('#rocket').length==1){
+                    JM.$realdiv.animate({'scrollTop': 0}, 'normal');
+                }
             })
-
-            JM.$realdiv.find('td').click(function () {
-                var index = $(this).parent().index()
-                if (index >= 3) {
-                    ChangeShadow(index);
-                }
-            })
-
-
-            function ChangeShadow(index) {
-                if (JM.$fakeL.find('td').eq(index).attr('data') == 'unclicked') {
-                    JM.$fakeL.find('td').eq(index).css({
-                        'box-shadow': 'inset 0px 5px 10px rgba(113,187,230,0.3)',
-                        'background-color': '#e7f4ff',
-                        'color': '#3982e1'
-                    });
-                    JM.$realdiv.find('tr').eq(index).find('td').css({
-                        'background-color': '#e7f4ff'
-                    });
-
-                    JM.$fakeL.find('td').eq(index).attr('data', 'clicked');
-                }
-                else {
-                    JM.$fakeL.find('td').eq(index).css({
-                        'box-shadow': 'inset -10px 0px 10px rgba(0, 0, 0, 0.1)',
-                        'backgroundColor': 'white',
-                        'color': '#666',
-                    });
-                    JM.$fakeL.find('td').eq(index).attr('data', 'unclicked');
-                    JM.$realdiv.find('tr').eq(index).find('td').css({
-                        'background-color': 'white'
-                    })
-                }
-            }
-
-            //火箭点击上升...........................................................
-            JM.$rocket.click(function () {
-                JM.$realdiv.animate({'scrollTop': 0}, 'normal');
-            })
-
 
             //隐藏相同...............................................................
             //初始化先toggleSame一次
@@ -336,7 +329,6 @@ function appendTable() {
             })
 
             console.log(new Date().getTime());
-
 
         },
         error: function (err) {

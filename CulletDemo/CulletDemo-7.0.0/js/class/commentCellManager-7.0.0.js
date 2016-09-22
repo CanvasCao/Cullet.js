@@ -364,13 +364,13 @@
 
             that.menuHide();
 
+            GM.changeState('add');
             $(that.C).fadeIn();
 
             if (that.moveTimer) {
                 console.log('Timer already exists');
                 return;
             } else {
-
                 var moveStartTime = new Date().getTime();
 
                 function innerMove() {
