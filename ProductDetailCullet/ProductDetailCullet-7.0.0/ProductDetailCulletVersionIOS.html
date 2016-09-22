@@ -18,7 +18,7 @@
 <script src='js/jsBridge/jsBridgeVersionIOS.js'></script>
 <script src='js/controller/controller.js'></script>
 <script src='js/globalManager/globalManager.js'></script>
-<script>   GM.version = 'IOS';</script>
+
 <script src='js/searchToJson/searchToJson.js'></script>
 <script src='js/constant/jimiHost.js'></script>
 
@@ -33,8 +33,7 @@
 <script>
     $(function () {
         if (!window.location.search) {
-//            5682a0aeefb80c4e26c4a8f5&uid=10059
-
+//            5682a0aeefb80c4e26c4a8f5&uid=10005
 //            window.location = window.location + '?pid=5682a0aeefb80c4e26c4a8f5&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg&jsonpcallback=1'
             window.location = window.location + '?pid=56f57a02efb80c57428c7451&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg';
         }
@@ -44,6 +43,7 @@
         //FastClick.....................................................
         FastClick.attach(document.body);
 
+        GM.version = 'IOS';
         GM.ifShare = false;
         //弹幕............................................................
         GM.ccm = GM.commentCellManager = new CommentCellManager('#cullet',

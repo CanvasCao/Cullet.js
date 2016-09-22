@@ -18,7 +18,7 @@
 
 <script src='js/controller/controller.js'></script>
 <script src='js/globalManager/globalManager.js'></script>
-<script>GM.version = 'Android';</script>
+
 <script src='js/searchToJson/searchToJson.js'></script>
 <script src='js/constant/jimiHost.js'></script>
 
@@ -42,6 +42,8 @@
         FastClick.attach(document.body);
 
 
+        GM.ifShare = false;
+        GM.version = 'Android';
         //弹幕............................................................
         GM.ccm = GM.commentCellManager = new CommentCellManager('#cullet',
                 {

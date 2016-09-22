@@ -184,6 +184,7 @@
             });
 
 
+            console.log(GM.version);
             ////回复逻辑..........................................................
             if (GM.version == 'Android') {
                 $(that.C).find('.commentReply').click(function (e) {
@@ -233,7 +234,12 @@
 
 
             else if (GM.version == 'web') {
-                GM.inputBox.C.find('input').focus();
+                $(that.C).find('.commentReply').click(function (e) {
+                    e.stopPropagation();
+                    GM.changeState('reply');
+                    GM.inputBox.C.find('input').focus();
+
+                })
             }
 
 
