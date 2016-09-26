@@ -118,6 +118,7 @@
                 //opacity: 1,
                 'white-space': 'nowrap',
                 'z-index': that.lineNum,
+                'will-change':'transform'
             });
 
 
