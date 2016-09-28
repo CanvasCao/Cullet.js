@@ -164,7 +164,7 @@ function appendTable() {
             $('#line2col1').css({'width': (leftW), 'float': 'left'});
 
 
-            if (!GM.ifShare) {
+            if (GM.edition != 'share') {
                 $('#line2col2').css({
                     'width': (mainW * 2),
                     'float': 'right',
@@ -172,7 +172,7 @@ function appendTable() {
                     'padding-right': 20,
                     'text-align': 'right'
                 })
-            } else {
+            } else if (GM.edition == 'login' || GM.edition == 'freeLogin') {
                 $('#line2col2').css({
                     'width': mainW,
                     'float': 'left',
@@ -221,7 +221,7 @@ function appendTable() {
                 var $target = $(target);
 
                 //如果是td 换颜色
-                if($target.is('td')){
+                if ($target.is('td')) {
                     var index = $target.parent().index();
                     if (index >= 3) {
                         ChangeShadow(index);
@@ -253,7 +253,7 @@ function appendTable() {
                     }
                 }
                 //火箭点击上升...........................................................
-                else if($target.closest('#rocket').length==1){
+                else if ($target.closest('#rocket').length == 1) {
                     JM.$realdiv.animate({'scrollTop': 0}, 'normal');
                 }
             })
@@ -314,7 +314,7 @@ function appendTable() {
                 }
             );
 
-            if (!GM.ifShare) {
+            if (GM.edition == 'login') {
                 GM.ib = GM.inputBox = new JimiInputBox('.jimiInputBox');
             }
 
@@ -325,6 +325,7 @@ function appendTable() {
             //加载弹幕....................................................................
             JM.$real.find('tr').eq(2).find('td').click(function () {
                 var pid = ($(this).attr('data-pid'));
+                GM.ccm.show();
                 GM.ccm.load(pid);
             })
 

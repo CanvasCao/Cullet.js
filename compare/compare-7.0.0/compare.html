@@ -5,34 +5,50 @@
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
     <title>参数对比</title>
+    <link rel="stylesheet" href="css/loaderCss/loader.min.css"/>
     <link rel="stylesheet" href="css/compare.css"/>
 </head>
 <body>
-<div id='con'>
-    <div id='line2'>
-        <!--高度是第二行的高度-->
-        <!--top是第一行的高度-->
-        <div id='line2col1'>基本参数</div>
-        <div id='line2col2'>√ 有&nbsp ×无&nbsp - 无数据</div>
+<div id='loading'>
+    <div class="loader">
+        <div class="loader-inner ball-spin-fade-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class='loader-innerText'>loading...</div>
     </div>
 </div>
 
-<div id='rocket'>
-    <img src="img/backTop.png" width="40" height="40"/>
-</div>
+<div id='loaded' style='display: none;'>
+    <div id='con'>
+        <div id='line2'>
+            <!--高度是第二行的高度-->
+            <!--top是第一行的高度-->
+            <div id='line2col1'>基本参数</div>
+            <div id='line2col2'>√ 有&nbsp ×无&nbsp - 无数据</div>
+        </div>
+    </div>
 
-<div id="cullet">
-    <div class='jimiInputBox'></div>
-</div>
+    <div id='rocket'>
+        <img src="img/backTop.png" width="40" height="40"/>
+    </div>
+
+    <div id="cullet">
+        <div class='jimiInputBox'></div>
+    </div>
 </div>
 
 <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://apps.bdimg.com/libs/underscore.js/1.7.0/underscore-min.js"></script>
-
 <script src='js/class/commentCell-7.0.0.js'></script>
 <script src='js/class/commentCellManager-7.0.0.js'></script>
 <script src='js/class/jimiInputBoxCullet.js'></script>
-
 <script src='js/controller/controller.js'></script>
 <script src='js/globalManager/globalManager.js'></script>
 <script src='js/searchToJson/searchToJson.js'></script>
@@ -44,9 +60,12 @@
 <script src='js/tool/velocity.ui.js'></script>
 <script>
     $(function () {
+        $('#loading').fadeOut();
+        $('#loaded').fadeIn();
+
         if (!window.location.search) {
 //            window.location = window.location + '?pids=56829da0efb80c4e26c3e3a2,56837c60efb80c6225ead657,56f4d0d0efb80c57428b630a&cate=3&uid=10002';
-            window.location = window.location + '?pids=56f57a7defb80c57428c74f6,56f56b2befb80c57428c654f,56829f6defb80c4e26c457f6&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg&jsonpcallback=1';
+            window.location = window.location + '?pids=56f57a7defb80c57428c74f6,56f56b2befb80c57428c654f,56829f6defb80c4e26c457f6&cate=6&uid=10002&usertype=1&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg';
         }
 
         window.searchJson = searchJson = window.location.search.searchToJson();
@@ -56,8 +75,8 @@
 
 
         //根据是否分享选择append不同的表格..................................................................
-        GM.ifShare = false;
-        GM.version='web';
+        GM.edition = 'login';
+        GM.version = 'web';
         appendTable();
 
     })

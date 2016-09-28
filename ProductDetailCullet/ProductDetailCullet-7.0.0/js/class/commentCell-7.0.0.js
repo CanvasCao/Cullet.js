@@ -192,6 +192,8 @@
             that.translateX = that.translateX - that.speed;
             //$dom.velocity({translateX: that.translateX}, 0);
             that.config.$dom[0].style.transform = 'translateX(' + that.translateX + 'px)';
+            that.config.$dom[0].style['-webkit-transform'] = 'translateX(' + that.translateX + 'px)';
+
 
             //一开始一定占据屏幕右侧 一旦开始不占据屏幕右侧就让occupied=false
             if (that.occupied) {

@@ -89,7 +89,7 @@
             this.createMenuAndInitCss();
             this.bindEvent();
 
-            if (!GM.ifShare) {
+            if (GM.edition=='login') {
                 this.bindCommentCellDelegate();
             }
         },
@@ -355,6 +355,10 @@
         }
         ,
 
+        show:function(){
+            var that=this;
+            $(that.C).fadeIn();
+        },
 
         //start 就是一边move一边push
         start: function () {

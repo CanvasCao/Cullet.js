@@ -51,15 +51,36 @@
             /*z-index: 1;*/
             box-sizing: border-box;
             border: 1px solid red;
-        }
 
+        }
     </style>
+    <link rel="stylesheet" href="css/loaderCss/loader.min.css"/>
 </head>
 <body>
 
-<div id="cullet">
-    <div class='jimiInputBox'></div>
+
+<div id='loading'>
+    <div class="loader">
+        <div class="loader-inner ball-spin-fade-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class='loader-innerText'>loading...</div>
+    </div>
 </div>
+
+<div id='loaded' style='display: none;'>
+    <div id="cullet">
+        <div class='jimiInputBox'></div>
+    </div>
+</div>
+
 
 <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://apps.bdimg.com/libs/underscore.js/1.7.0/underscore-min.js"></script>
@@ -78,6 +99,8 @@
 
 <script>
     $(function () {
+        $('#loading').fadeOut();
+        $('#loaded').fadeIn();
         if (!window.location.search) {
 //            window.location = window.location + '?pid=56f57a02efb80c57428c7451&uid=10002';
             window.location = window.location + '?pid=56f57a02efb80c57428c7451&cate=6&uid=1000&usertype=0&uimg=http://7xo2me.com1.z0.glb.clouddn.com/images/17RTW5G74N2J.jpg'
@@ -88,9 +111,8 @@
         //FastClick.....................................................
         FastClick.attach(document.body);
 
-
+        GM.edition = 'login';
         GM.version = 'web';
-        GM.ifShare = false;
         //弹幕...........................................................
         GM.ccm = GM.commentCellManager = new CommentCellManager('#cullet',
                 {
@@ -108,7 +130,7 @@
         GM.ccm.load(searchJson.pid);
 
         //inputBox..................................................
-        if (!GM.ifShare) {
+        if (GM.edition == 'login') {
             GM.inputBox = new JimiInputBox('.jimiInputBox');
         }
 
