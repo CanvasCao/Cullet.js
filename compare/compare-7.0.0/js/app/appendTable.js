@@ -44,6 +44,9 @@ function appendTable() {
         jsonp: "callback",
         jsonpCallback: "jsonpcallback",
         success: function (data) {
+            $('#loading').hide();
+            $('#loaded').show();
+
             console.log(JSON.stringify(data));
             console.log(new Date().getTime())
 
