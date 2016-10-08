@@ -72,7 +72,7 @@ function appendTable() {
             //第二行是基本参数
             JM.$real.append('<tr></tr>')
             for (i = 0; i < headerArr.length + 1; i++) {
-                JM.$real.find('tr').eq(1).append('<td>' + 'line2' + '</td>');
+                JM.$real.find('tr').eq(1).append('<td>&nbsp</td>');
             }
 
             ////第三行弹幕
@@ -118,7 +118,7 @@ function appendTable() {
 
 //                fakeL第二行是'line2'以后会盖掉
             JM.$fakeL.append('<tr></tr>');
-            JM.$fakeL.find('tr').eq(1).append('<td data="unclicked">' + 'line2' + '</td>');
+            JM.$fakeL.find('tr').eq(1).append('<td data="unclicked">' + '&nbsp' + '</td>');
 
             //fakeL第三行是'line3'以后会盖掉
             JM.$fakeL.append('<tr></tr>');
